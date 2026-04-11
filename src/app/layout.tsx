@@ -1,18 +1,15 @@
 import type { Metadata } from "next";
-import { Geist_Mono, DM_Sans, Cormorant_Garamond } from "next/font/google";
+import { Geist_Mono, DM_Sans, Cormorant_Garamond, Geist } from "next/font/google";
 import "./globals.css";
 import { Navbar } from "@/components/layout/navbar1";
+import { cn } from "@/lib/utils";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
 
-const dmSans = DM_Sans({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
-  variable: "--font-sans",
-});
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const cormorant = Cormorant_Garamond({
   subsets: ["latin"],
@@ -34,7 +31,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${dmSans.variable} ${cormorant.variable} ${geistMono.variable} h-full antialiased`}
+      className={cn("h-full", "antialiased", cormorant.variable, geistMono.variable, "font-sans", geist.variable)}
     >
       <body className="min-h-full flex flex-col">
         {children}
