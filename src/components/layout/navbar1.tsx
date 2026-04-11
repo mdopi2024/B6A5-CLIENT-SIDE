@@ -157,13 +157,13 @@ const Navbar = ({
             <Link href="/" className="flex items-center gap-2">
               <div className="relative">
                 <img
-                  src="/laxelogo.png"
+                  src="/boshontologo.png"
                   className="h-10 w-10 rounded-full border-2 border-[#EF9F27]"
-                  alt="LuxeBites logo"
+                  alt="Boshonto logo"
                 />
               </div>
               <div className="flex flex-col leading-tight">
-                <h1 className="text-lg font-bold text-white tracking-wide">LuxeBites</h1>
+                <h1 className="text-lg font-bold text-white tracking-wide">Boshonto</h1>
                 <span className="text-[9px] text-[#EF9F27] tracking-[0.18em] uppercase font-medium">
                   Hotel & Dining
                 </span>

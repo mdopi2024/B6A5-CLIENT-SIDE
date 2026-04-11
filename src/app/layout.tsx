@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist_Mono, DM_Sans, Cormorant_Garamond } from "next/font/google";
 import "./globals.css";
-import { Navbar } from "@/components/navbar1";
+import { Navbar } from "@/components/layout/navbar1";
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -22,8 +22,8 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
-  title: "Nila — Hotel & Dining",
-  description: "Welcome to Nila, a luxury hotel and dining experience.",
+  title: "Boshonto — Hotel & Dining",
+  description: "Welcome to Boshonto, a luxury hotel and dining experience.",
 };
 
 export default function RootLayout({
