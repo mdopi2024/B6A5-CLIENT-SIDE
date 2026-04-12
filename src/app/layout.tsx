@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
-import { Geist_Mono, DM_Sans, Cormorant_Garamond, Geist } from "next/font/google";
+import { Geist_Mono,  Cormorant_Garamond, Geist } from "next/font/google";
 import "./globals.css";
-import { Navbar } from "@/components/layout/navbar1";
 import { cn } from "@/lib/utils";
+import { Toast } from "radix-ui";
+import { Toaster } from "sonner";
+
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
@@ -34,7 +36,9 @@ export default function RootLayout({
       className={cn("h-full", "antialiased", cormorant.variable, geistMono.variable, "font-sans", geist.variable)}
     >
       <body className="min-h-full flex flex-col">
+      
         {children}
+          <Toaster richColors position="top-right"/>
       </body>
     </html>
   );

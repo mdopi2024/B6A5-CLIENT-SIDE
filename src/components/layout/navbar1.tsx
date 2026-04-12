@@ -21,8 +21,8 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import Link from "next/link";
-import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
 
 interface MenuItem {
   title: string;
@@ -65,7 +65,7 @@ const Navbar = ({
     signup: { title: "Sign up", url: "/signup" },
   },
 }: Navbar1Props) => {
-  const { data } = authClient.useSession();
+  const {data}= authClient.useSession()
   const router = useRouter();
 
   const handleLogOut = async () => {
@@ -189,12 +189,12 @@ const Navbar = ({
                   <SheetTitle>
                     <Link href="/" className="flex items-center gap-2">
                       <img
-                        src="/laxelogo.png"
+                        src="/boshontologo.png"
                         className="h-10 w-10 rounded-full border-2 border-[#042C53]"
-                        alt="LuxeBites logo"
+                        alt="Boshonto logo"
                       />
                       <div className="flex flex-col leading-tight">
-                        <span className="text-[#042C53] font-bold text-base tracking-wide">LuxeBites</span>
+                        <span className="text-[#042C53] font-bold text-base tracking-wide">Boshonto</span>
                         <span className="text-[9px] text-[#EF9F27] tracking-[0.15em] uppercase font-semibold">
                           Hotel & Dining
                         </span>
