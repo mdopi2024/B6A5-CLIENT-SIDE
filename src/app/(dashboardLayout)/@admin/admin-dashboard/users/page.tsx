@@ -1,4 +1,6 @@
 import { getAllUsers } from '@/actions/auth.actions';
+import UserTable from '@/components/module/users/UserTable';
+import { User } from '@/types/auth.interface';
 import React from 'react';
 
 const UserPage = async() => {
@@ -6,7 +8,7 @@ const UserPage = async() => {
 
     return (
         <div>
-            i am user page
+          <UserTable user={data as User[]} />
         </div>
     );
 };
