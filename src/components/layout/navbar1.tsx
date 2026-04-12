@@ -1,6 +1,6 @@
 "use client";
 
-import { Menu } from "lucide-react";
+import { Menu, UserPlus, LogIn, LogOut } from "lucide-react";
 import {
   Accordion,
   AccordionItem,
@@ -65,7 +65,7 @@ const Navbar = ({
     signup: { title: "Sign up", url: "/signup" },
   },
 }: Navbar1Props) => {
-  const {data}= authClient.useSession()
+  const { data } = authClient.useSession();
   const router = useRouter();
 
   const handleLogOut = async () => {
@@ -123,8 +123,10 @@ const Navbar = ({
               <button
                 onClick={handleLogOut}
                 className="border border-[#EF9F27] text-[#EF9F27] px-5 py-2 text-sm font-semibold rounded
+                           flex items-center gap-2
                            hover:bg-[#EF9F27] hover:text-[#042C53] transition-all duration-200 tracking-wide"
               >
+                <LogOut className="h-4 w-4" />
                 Logout
               </button>
             ) : (
@@ -132,17 +134,19 @@ const Navbar = ({
                 <Link
                   href={auth.login.url}
                   className="text-sm font-semibold text-[#EF9F27]/90 hover:text-[#EF9F27] 
-                             px-4 py-2 rounded border border-transparent 
+                             px-4 py-2 rounded border border-transparent flex items-center gap-2
                              hover:border-[#EF9F27]/40 transition-all duration-200 tracking-wide"
                 >
+                  <LogIn className="h-4 w-4" />
                   {auth.login.title}
                 </Link>
                 <Link
                   href={auth.signup.url}
                   className="text-sm font-bold bg-[#EF9F27] text-[#042C53] 
-                             px-5 py-2 rounded tracking-wide
+                             px-5 py-2 rounded tracking-wide flex items-center gap-2
                              hover:bg-[#FAC775] transition-all duration-200 shadow-md shadow-[#EF9F27]/20"
                 >
+                  <UserPlus className="h-4 w-4" />
                   {auth.signup.title}
                 </Link>
               </div>
@@ -223,8 +227,10 @@ const Navbar = ({
                         onClick={handleLogOut}
                         className="border-2 border-[#042C53] text-[#042C53] px-4 py-2.5 
                                    hover:bg-[#042C53] hover:text-white font-semibold rounded
-                                   transition-all duration-200 w-full tracking-wide text-sm"
+                                   transition-all duration-200 w-full tracking-wide text-sm
+                                   flex items-center justify-center gap-2"
                       >
+                        <LogOut className="h-4 w-4" />
                         Logout
                       </button>
                     ) : (
@@ -235,14 +241,20 @@ const Navbar = ({
                           className="border-[#042C53] text-[#042C53] hover:bg-[#042C53] hover:text-white
                                      font-semibold tracking-wide transition-all duration-200"
                         >
-                          <Link href={auth.login.url}>{auth.login.title}</Link>
+                          <Link href={auth.login.url} className="flex items-center gap-2">
+                            <LogIn className="h-4 w-4" />
+                            {auth.login.title}
+                          </Link>
                         </Button>
                         <Button
                           asChild
                           className="bg-[#EF9F27] text-[#042C53] hover:bg-[#FAC775]
                                      font-bold tracking-wide shadow-md shadow-[#EF9F27]/20 transition-all duration-200"
                         >
-                          <Link href={auth.signup.url}>{auth.signup.title}</Link>
+                          <Link href={auth.signup.url} className="flex items-center gap-2">
+                            <UserPlus className="h-4 w-4" />
+                            {auth.signup.title}
+                          </Link>
                         </Button>
                       </div>
                     )}
