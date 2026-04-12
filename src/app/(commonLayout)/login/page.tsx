@@ -10,7 +10,6 @@ import * as z from "zod";
 import Link from "next/link";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
-import { AuthServices } from "@/services/auth.services";
 import { authClient } from '@/lib/auth-client';
 
 const zodForm = z.object({

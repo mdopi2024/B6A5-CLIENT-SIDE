@@ -3,13 +3,17 @@ import * as z from "zod";
 
 export const env = createEnv({
   server: {
-   BACKEND_URL: z.string().url(),
+   BACKEND_URL: z.url(),
+    AUTH_URL: z.url(),
+    API_URL: z.url(),
+    FRONTEND_URL: z.url(),
   },
-  client: {
-    NEXT_PUBLIC_BACKEND_URL: z.string().url(),
-  },
+
   runtimeEnv: {
     BACKEND_URL: process.env.BACKEND_URL,
-    NEXT_PUBLIC_BACKEND_URL: process.env.NEXT_PUBLIC_BACKEND_URL,
+    AUTH_URL: process.env.AUTH_URL,
+    API_URL: process.env.API_URL,
+    FRONTEND_URL: process.env.FRONTEND_URL,
+
   },
 })

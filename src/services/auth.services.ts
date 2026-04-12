@@ -1,40 +1,26 @@
 import { env } from "@/env";
-import { SigninFormValues, SignupFormValues } from "@/interfaces/auth.interface";
+import { cookie } from "@/utils/cookie";
 
-const backendUrl = env.NEXT_PUBLIC_BACKEND_URL;
+const authUrl = env.AUTH_URL;
 
 export const AuthServices = {
-    signUp: async (data: SignupFormValues) => {
+    session: async () => {
         try {
-            const response = await fetch(`${backendUrl}/api/v1/auth/register`, {
-                method: "POST",
+            const res = await fetch(`${authUrl}/get-session`, {
                 headers: {
-                    "Content-Type": "application/json",
+                    Cookie: await cookie()
                 },
-                body: JSON.stringify(data),
-            });
-            const result = await response.json();
-            return result;
+                cache: "no-store"
+            })
+            const data = await res.json();
+
+            return data;
+
         } catch (error) {
-            console.log('fetch error:', error)
-            return error;
+            console.error("Error fetching session:", error);
+            return error
         }
-    },
-    signIn: async (data: SigninFormValues) => {
-        try {
-            const response = await fetch(`${backendUrl}/api/v1/auth/login`, {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(data),
-            });
-            const result = await response.json();
-            return result;
-        } catch (error) {
-            console.log('fetch error:', error)
-            return error;
-        }
-    },
+
+    }
 
 }

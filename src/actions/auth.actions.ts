@@ -1,6 +1,6 @@
 "use server"
 
-import { SignupFormValues } from "@/interfaces/auth.interface";
+import { SignupFormValues } from "@/types/auth.interface";
 import { AuthServices } from "@/services/auth.services";
 
 export const registerUser = async(userData: SignupFormValues) => {

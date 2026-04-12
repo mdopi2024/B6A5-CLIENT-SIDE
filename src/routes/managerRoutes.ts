@@ -3,10 +3,18 @@ import { Routes } from "@/types/routes";
 
 export const managerRoutes:Routes[] = [
     {
-        title:"Administration",
+        title:"Management",
         items:[
            {
-             title:"rooms",
+             title:"Rooms",
+             url:"#"
+            },
+           {
+             title:"Create Room",
+             url:"#"
+            },
+           {
+             title:"Profile",
              url:"#"
             },
            

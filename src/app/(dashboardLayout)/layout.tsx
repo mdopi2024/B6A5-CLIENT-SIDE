@@ -5,6 +5,8 @@ import {
 } from "@/components/ui/breadcrumb"
 import { Separator } from "@/components/ui/separator"
 import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar"
+import { authClient } from "@/lib/auth-client";
+import { AuthServices } from "@/services/auth.services";
 
 export default async function Page({
   admin, guest, manager
@@ -13,8 +15,10 @@ export default async function Page({
   guest: React.ReactNode,
   manager: React.ReactNode
 }) {
-  const role = "ADMIN";
-
+ 
+  const session = await AuthServices.session();
+  const role =session?.user?.role; 
+  
   return (
     <SidebarProvider>
       <AppSidebar role={role} />
