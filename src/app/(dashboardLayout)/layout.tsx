@@ -51,8 +51,8 @@ export default async function Page({
 
         {/* Main */}
         <main className="flex-1 overflow-auto bg-cream p-6">
-          {/* {role === 'GUEST' && guest} 
-          {role === 'MANAGER' && manager}  */}
+          {role === 'GUEST' && guest} 
+          {role === 'MANAGER' && manager} 
           {role === 'ADMIN' && admin}
         </main>
 
