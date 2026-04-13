@@ -2,7 +2,8 @@
 import { deleteAndRestoreUser } from '@/actions/auth.actions';
 import { User } from '@/types/auth.interface';
 import { Trash2, ShieldCheck, Mail, Calendar, Users, Crown, UserCog, RotateCcw } from 'lucide-react';
-import { toast } from 'sonner';
+import Link from 'next/link';
+import { toast } from 'sonner'
 
 const roleConfig: Record<string, {
     label: string;
@@ -143,13 +144,13 @@ const UserTable = ({ user }: { user: User[] }) => {
                                     {/* Actions */}
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-2">
-                                            <button className="inline-flex items-center gap-1.5 px-3.5 py-2 text-[11px] font-bold rounded-xl
+                                            <Link href={`/admin-dashboard/update-role/${u.id}`} className="inline-flex items-center gap-1.5 px-3.5 py-2 text-[11px] font-bold rounded-xl
                                                                border border-[#042C53]/20 text-[#042C53] bg-[#042C53]/5
                                                                hover:bg-[#042C53] hover:text-[#EF9F27] hover:border-[#042C53]
                                                                transition-all duration-200 tracking-wide shadow-sm hover:shadow-md">
                                                 <ShieldCheck className="h-3.5 w-3.5" />
                                                 Update Role
-                                            </button>
+                                            </Link>
 
                                             {u.isDeleted ? (
                                                 <button onClick={()=>handleDeleteRestore(u.id)} className="inline-flex items-center gap-1.5 px-3.5 py-2 text-[11px] font-bold rounded-xl

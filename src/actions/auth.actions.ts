@@ -15,3 +15,14 @@ export const deleteAndRestoreUser = async (id: string) => {
      updateTag("getAllUser");
     return await userData;
 }
+
+export const getUserById = async (id: string) => {
+    const userData = await AuthServices.getUserById(id);   
+    return await userData;
+}
+
+export const updateUserRole = async (id: string,value:{role:string}) => {
+        const userData = await AuthServices.updateUserRole(id, value);
+        updateTag("getAllUser");
+        return await userData;          
+    }
