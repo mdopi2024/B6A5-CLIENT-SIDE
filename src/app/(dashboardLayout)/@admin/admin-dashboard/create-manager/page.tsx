@@ -169,8 +169,8 @@ const CreateManager = () => {
 
           <p className="text-sm text-center text-[#042C53]/60">
             Back to{" "}
-            <Link href="/dashboard" className="text-[#EF9F27] font-semibold">
-              Dashboard
+            <Link href="/" className="text-[#EF9F27] font-semibold">
+              Home page
             </Link>
           </p>
 
