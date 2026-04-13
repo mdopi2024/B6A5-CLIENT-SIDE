@@ -1,5 +1,8 @@
+"use client";
+import { deleteAndRestoreUser } from '@/actions/auth.actions';
 import { User } from '@/types/auth.interface';
-import { Trash2, ShieldCheck, Mail, Calendar, Users, Crown, UserCog } from 'lucide-react';
+import { Trash2, ShieldCheck, Mail, Calendar, Users, Crown, UserCog, RotateCcw } from 'lucide-react';
+import { toast } from 'sonner';
 
 const roleConfig: Record<string, {
     label: string;
@@ -24,6 +27,18 @@ const roleConfig: Record<string, {
 };
 
 const UserTable = ({ user }: { user: User[] }) => {
+    const handleDeleteRestore = async (id: string) => {
+        const tosatId = toast.loading("Processing...");
+        try {
+            const data = await deleteAndRestoreUser(id);
+            if (!data.success) {
+                toast.error(data.message || "Failed to delete/restore user", { id: tosatId });
+            }
+            toast.success(data.message || "User updated successfully", { id: tosatId });
+        } catch (error) {
+            toast.error("Something went wrong", { id: tosatId });
+        }
+    }
     return (
         <div className="rounded-xl border border-[#042C53]/15 overflow-hidden shadow-lg">
 
@@ -47,7 +62,7 @@ const UserTable = ({ user }: { user: User[] }) => {
                         <tr className="bg-[#042C53]/5 border-b border-[#042C53]/10">
                             <th className="px-6 py-4 text-left text-xs font-bold text-[#042C53]/50 uppercase tracking-widest">User</th>
                             <th className="px-6 py-4 text-left text-xs font-bold text-[#042C53]/50 uppercase tracking-widest">Role</th>
-                            <th className="px-6 py-4 text-left text-xs font-bold text-[#042C53]/50 uppercase tracking-widest">Status</th>
+                            <th className="px-6 py-4 text-left text-xs font-bold text-[#042C53]/50 uppercase tracking-widest">Email Status</th>
                             <th className="px-6 py-4 text-left text-xs font-bold text-[#042C53]/50 uppercase tracking-widest">Joined</th>
                             <th className="px-6 py-4 text-left text-xs font-bold text-[#042C53]/50 uppercase tracking-widest">Actions</th>
                         </tr>
@@ -88,7 +103,7 @@ const UserTable = ({ user }: { user: User[] }) => {
                                         </div>
                                     </td>
 
-                                    {/* Role ── with icon */}
+                                    {/* Role */}
                                     <td className="px-6 py-4">
                                         <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold tracking-wider border ${role.className}`}>
                                             {role.icon}
@@ -96,7 +111,7 @@ const UserTable = ({ user }: { user: User[] }) => {
                                         </span>
                                     </td>
 
-                                    {/* Status ── navy/gold colors */}
+                                    {/* Email Status */}
                                     <td className="px-6 py-4">
                                         <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold border
                                             ${u.emailVerified
@@ -111,7 +126,7 @@ const UserTable = ({ user }: { user: User[] }) => {
                                         </span>
                                     </td>
 
-                                    {/* Joined Date */}
+                                    {/* Joined */}
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-1.5 text-[#042C53]/50">
                                             <Calendar className="h-3.5 w-3.5" />
@@ -125,7 +140,7 @@ const UserTable = ({ user }: { user: User[] }) => {
                                         </div>
                                     </td>
 
-                                    {/* Actions ── new style */}
+                                    {/* Actions */}
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-2">
                                             <button className="inline-flex items-center gap-1.5 px-3.5 py-2 text-[11px] font-bold rounded-xl
@@ -135,13 +150,24 @@ const UserTable = ({ user }: { user: User[] }) => {
                                                 <ShieldCheck className="h-3.5 w-3.5" />
                                                 Update Role
                                             </button>
-                                            <button className="inline-flex items-center gap-1.5 px-3.5 py-2 text-[11px] font-bold rounded-xl
-                                                               border border-red-200 text-red-400 bg-red-50
-                                                               hover:bg-red-500 hover:text-white hover:border-red-500
-                                                               transition-all duration-200 tracking-wide shadow-sm hover:shadow-md">
-                                                <Trash2 className="h-3.5 w-3.5" />
-                                                Delete
-                                            </button>
+
+                                            {u.isDeleted ? (
+                                                <button onClick={()=>handleDeleteRestore(u.id)} className="inline-flex items-center gap-1.5 px-3.5 py-2 text-[11px] font-bold rounded-xl
+                                                                   border border-green-200 text-green-500 bg-green-50
+                                                                   hover:bg-green-500 hover:text-white hover:border-green-500
+                                                                   transition-all duration-200 tracking-wide shadow-sm hover:shadow-md">
+                                                    <RotateCcw className="h-3.5 w-3.5" />
+                                                    Restore
+                                                </button>
+                                            ) : (
+                                                <button onClick={()=>handleDeleteRestore(u.id)} className="inline-flex items-center gap-1.5 px-3.5 py-2 text-[11px] font-bold rounded-xl
+                                                                   border border-red-200 text-red-400 bg-red-50
+                                                                   hover:bg-red-500 hover:text-white hover:border-red-500
+                                                                   transition-all duration-200 tracking-wide shadow-sm hover:shadow-md">
+                                                    <Trash2 className="h-3.5 w-3.5" />
+                                                    Delete
+                                                </button>
+                                            )}
                                         </div>
                                     </td>
                                 </tr>

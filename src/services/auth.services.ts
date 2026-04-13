@@ -37,6 +37,20 @@ export const AuthServices = {
             return error
         }
 
+    },
+    deleteAndRestoreUser: async (id: string) => {
+        try {
+            const res = await fetch(`${envUrl.API_URL}/auth/delete-restore/${id}`, {
+                method: "PATCH",
+                headers: {
+                    Cookie: await cookie()
+                },
+            })
+            const data = await res.json();
+            return data;
+        } catch (error) {
+            return error;
+        }
     }
 
 }
