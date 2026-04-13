@@ -1,7 +1,7 @@
 import { env } from "@/env";
+import { CreateManagerInput } from "@/types/auth.interface";
 import { cookie } from "@/utils/cookie";
-import { updateUser } from "better-auth/api";
-import { get } from "http";
+
 
 const envUrl = env;
 
@@ -83,6 +83,23 @@ export const AuthServices = {
         } catch (error) {
             return error;
         }   
+    },
+    createManager: async (value: CreateManagerInput) => {
+        try {
+            const res = await fetch(`${envUrl.API_URL}/manager/register-manager`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json", 
+                    Cookie: await cookie()
+                },
+                body: JSON.stringify(value)  
+             })
+            const data = await res.json();
+            return data;
+        } catch (error) {
+            return error;
+        }   
+
     }
 
 }   

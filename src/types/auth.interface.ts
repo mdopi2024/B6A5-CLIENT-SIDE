@@ -10,3 +10,9 @@ export interface User {
   isDeleted: boolean;
   deletedAt: string | null;
 }
+
+export interface CreateManagerInput {
+  name: string;
+  email: string;
+  password: string;
+}

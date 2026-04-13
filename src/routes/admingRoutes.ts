@@ -17,6 +17,10 @@ export const adminRoutes: Routes[] = [
                 url: "/admin-dashboard/bookings"
             },
             {
+                title: "Create Manager",
+                url: "/admin-dashboard/create-manager"
+            },
+            {
                 title: "Profile",
                 url: "/admin-dashboard"
             },

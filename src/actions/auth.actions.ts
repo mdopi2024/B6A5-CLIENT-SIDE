@@ -1,7 +1,8 @@
 "use server";
 
 import { AuthServices } from "@/services/auth.services";
-import { updateTag } from "next/cache";
+import { CreateManagerInput } from "@/types/auth.interface";
+import { revalidateTag, updateTag } from "next/cache";
 
 
 
@@ -12,17 +13,23 @@ export const getAllUsers = async () => {
 
 export const deleteAndRestoreUser = async (id: string) => {
     const userData = await AuthServices.deleteAndRestoreUser(id);
-     updateTag("getAllUser");
+    updateTag("getAllUser");
     return await userData;
 }
 
 export const getUserById = async (id: string) => {
-    const userData = await AuthServices.getUserById(id);   
+    const userData = await AuthServices.getUserById(id);
     return await userData;
 }
 
-export const updateUserRole = async (id: string,value:{role:string}) => {
-        const userData = await AuthServices.updateUserRole(id, value);
-        updateTag("getAllUser");
-        return await userData;          
-    }
+export const updateUserRole = async (id: string, value: { role: string }) => {
+    const userData = await AuthServices.updateUserRole(id, value);
+    updateTag("getAllUser");
+    return await userData;
+}
+
+export const createManager = async (value: CreateManagerInput) => {
+    const userData = await AuthServices.createManager(value);
+    revalidateTag("getAllUser",'max');
+    return await userData;
+}
