@@ -106,7 +106,7 @@ const CreateRooms = () => {
                 <SectionLabel title="Basic Information" />
                 <div className="flex flex-col gap-4 -mt-2">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <FormField form={form} name="roomNumber" label="Room Number" placeholder="e.g. 101" />
+                    <FormField form={form} name="roomNumber" label="Room Number" placeholder="e.g. 101" type="number" />
                     <FormField form={form} name="floor" label="Floor" placeholder="e.g. 1" type="number" />
                   </div>
 
