@@ -23,6 +23,23 @@ export const roomService = {
     } catch (error) {
       return error;
     }
-}
+},
+  getAllRooms: async () => {
+    try {
+      const response = await fetch(`${Env.API_URL}/room/get-all-rooms`,{
+        headers:{
+          Cookie: await cookie()
+        },
+        next:{tags:['all-rooms']}
+
+      });
+      const result = await response.json();
+      return result;
+    } catch (error) {
+      return error;
+    }
+},
+
+
          
 }
