@@ -4,6 +4,7 @@
 import { Room } from '@/types/room.interface';
 import { toast } from 'sonner';
 import { deleteRoom } from '@/actions/room.action';
+import Link from 'next/link';
 
 const statusConfig = {
   AVAILABLE: { label: 'Available', dot: '#639922', bg: '#EAF3DE', color: '#3B6D11' },
@@ -124,12 +125,11 @@ const RoomTable = ({ rooms }: { rooms: Room[] }) => {
                     <div className="flex items-center justify-center gap-2">
 
                       {/* Edit Button */}
-                      <button
-                        onClick={() => {/* handle edit */ }}
+                      <Link href={`/manager-dashboard/update-room/${room.id}`}
                         className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#042C53] text-[#EF9F27] text-[11px] font-semibold transition-all duration-200 hover:bg-[#053b6f] hover:scale-105 active:scale-95"
                       >
                         ✏️ Edit
-                      </button>
+                      </Link>
 
                       {/* Delete Button */}
                       <button
