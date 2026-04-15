@@ -6,7 +6,7 @@ const UpdateRoom = async({params}:{params:Promise<{id:string}>}) => {
     
     return (
         <div>
-          <UpdateRoomForm></UpdateRoomForm>
+          <UpdateRoomForm id={id}></UpdateRoomForm>
         </div>
     );
 };

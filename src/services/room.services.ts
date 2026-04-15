@@ -1,6 +1,6 @@
 
 import { env } from "@/env";
-import { CreateRoomFormValues } from "@/types/room.interface";
+import { CreateRoomFormValues, Room } from "@/types/room.interface";
 import { cookie } from "@/utils/cookie";
 
 
@@ -23,27 +23,23 @@ export const roomService = {
     } catch (error) {
       return error;
     }
-},
+  },
   getAllRooms: async () => {
     try {
-      const response = await fetch(`${Env.API_URL}/room/get-all-rooms`,{
-        headers:{
-          Cookie: await cookie()
-        },
-        next:{tags:['all-rooms']}
-
+      const response = await fetch(`${Env.API_URL}/room/get-all-rooms`, {
+        next: { tags: ['all-rooms'] }
       });
       const result = await response.json();
       return result;
     } catch (error) {
       return error;
     }
-},
-  deleteRoom: async (id:string) => {
+  },
+  deleteRoom: async (id: string) => {
     try {
-      const response = await fetch(`${Env.API_URL}/room/delete-room/${id}`,{
-        method:'DELETE',
-        headers:{
+      const response = await fetch(`${Env.API_URL}/room/delete-room/${id}`, {
+        method: 'DELETE',
+        headers: {
           Cookie: await cookie()
         },
       });
@@ -52,8 +48,33 @@ export const roomService = {
     } catch (error) {
       return error;
     }
-},
+  },
+  getRoomById: async (id: string) => {
+    try {
+      const response = await fetch(`${Env.API_URL}/room/get-room/${id}`);
+      const result = await response.json();
+      return result;
+    } catch (error) {
+      return error;
+    }
+  },
+  updateRoom: async (id: string, payload: Room) => {
+    try {
+      const response = await fetch(`${Env.API_URL}/room/update-room/${id}`,{
+        method: 'PATCH',
+        headers: {
+          "Content-Type": "application/json",
+          Cookie: await cookie(),
+        },
+        body: JSON.stringify(payload),
+      });
+      const result = await response.json();
+      return result;
+    } catch (error) {
+      return error;
+    }
+  },
 
 
-         
+
 }
