@@ -1,10 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
-import { authClient } from '@/lib/auth-client';
 import { Room } from '@/types/room.interface';
-import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
-import { date } from 'zod';
+import { toast } from 'sonner';
+import { deleteRoom } from '@/actions/room.action';
 
 const statusConfig = {
   AVAILABLE: { label: 'Available', dot: '#639922', bg: '#EAF3DE', color: '#3B6D11' },
@@ -15,6 +14,27 @@ const statusConfig = {
 const RoomTable = ({ rooms }: { rooms: Room[] }) => {
   const available = rooms.filter(r => r.status === 'AVAILABLE').length;
   const booked = rooms.filter(r => r.status === 'BOOKED').length;
+
+  const handleDeleteRoom = async (id: string) => {
+    const toastId = toast.loading("Deleting room in process...");
+
+    try {
+      // example API call (replace with your real service)
+      const res = await deleteRoom(id);
+
+      if (!res?.success) {
+          toast.error(res.message || "Failed to delete room", { id: toastId, });
+      }
+
+      toast.success(res.message ||"Room deleted successfully", {
+        id: toastId,
+      });
+    } catch (error: any) {
+      toast.error(error.message || "Something went wrong", {
+        id: toastId,
+      });
+    }
+  };
 
   return (
     <div className="rounded-2xl overflow-hidden border border-[#042C53]/10">
@@ -113,7 +133,7 @@ const RoomTable = ({ rooms }: { rooms: Room[] }) => {
 
                       {/* Delete Button */}
                       <button
-                        onClick={() => {/* handle delete */ }}
+                        onClick={() =>handleDeleteRoom(room.id)}
                         className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#FCEBEB] text-[#A32D2D] border border-[#F09595] text-[11px] font-semibold transition-all duration-200 hover:bg-[#f8dada] hover:scale-105 active:scale-95"
                       >
                         🗑 Delete

@@ -39,6 +39,20 @@ export const roomService = {
       return error;
     }
 },
+  deleteRoom: async (id:string) => {
+    try {
+      const response = await fetch(`${Env.API_URL}/room/delete-room/${id}`,{
+        method:'DELETE',
+        headers:{
+          Cookie: await cookie()
+        },
+      });
+      const result = await response.json();
+      return result;
+    } catch (error) {
+      return error;
+    }
+},
 
 
          
