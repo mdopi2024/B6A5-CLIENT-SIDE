@@ -1,3 +1,4 @@
+import UpdateRoomForm from "@/components/module/shared/UpdateRoomForm";
 
 
 const UpdateRoom = async({params}:{params:Promise<{id:string}>}) => {
@@ -5,7 +6,7 @@ const UpdateRoom = async({params}:{params:Promise<{id:string}>}) => {
     
     return (
         <div>
-            i am update room {id}
+          <UpdateRoomForm></UpdateRoomForm>
         </div>
     );
 };
