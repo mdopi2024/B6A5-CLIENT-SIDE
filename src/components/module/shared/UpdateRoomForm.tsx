@@ -11,13 +11,11 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { getRoomById, updateRoom } from "@/actions/room.action";
-import { Room, } from "@/types/room.interface";
+import { Room } from "@/types/room.interface";
 
-
-// ✅ All fields are string-based to match defaultValues — no coercion in schema
 const zodForm = z.object({
     roomNumber: z.string().min(1, "Room number is required"),
-    floor: z.string(),
+    floor: z.coerce.number() || 0,
     title: z.string().min(1, "Title is required"),
     description: z.string().optional(),
     roomType: z.enum(["SINGLE", "DOUBLE", "SUITE", "DELUXE"]),
@@ -25,28 +23,26 @@ const zodForm = z.object({
     capacity: z.number().min(1, "Capacity is required"),
     pricePerNight: z.number().min(1, "Price is required"),
     images: z.string().optional(),
+    status: z.enum(["AVAILABLE", "BOOKED", "MAINTENANCE"]),
 });
 
 const CreateRooms = ({ id }: { id: string }) => {
     const router = useRouter();
     const [room, setRoom] = useState<Room | null>(null);
+
     useEffect(() => {
         const loadRoom = async () => {
             if (!id) return;
-            const res = await getRoomById(id as string)
-
-            setRoom(res.data)
+            const res = await getRoomById(id as string);
+            setRoom(res.data);
         };
-
         loadRoom();
     }, [id]);
 
-
-
     const form = useForm({
         defaultValues: {
-            roomNumber: room?.roomNumber || '',
-            floor: room?.floor || '',
+            roomNumber: room?.roomNumber || 0,
+            floor: room?.floor || 0,
             title: room?.title || "",
             description: room?.description || "",
             roomType: room?.roomType || "SINGLE" as "SINGLE" | "DOUBLE" | "SUITE" | "DELUXE",
@@ -54,6 +50,7 @@ const CreateRooms = ({ id }: { id: string }) => {
             capacity: room?.capacity || "",
             pricePerNight: room?.pricePerNight || "",
             images: room?.images || "",
+            status: room?.status || "AVAILABLE" as "AVAILABLE" | "BOOKED" | "MAINTENANCE",
         },
         validators: { onSubmit: zodForm },
         onSubmit: async ({ value }) => {
@@ -65,12 +62,13 @@ const CreateRooms = ({ id }: { id: string }) => {
                     capacity: Number(value.capacity),
                     pricePerNight: Number(value.pricePerNight),
                 };
-                const result = await updateRoom(id, payload as Room)
-                if (!result.sucess) {
-                    toast.error(result.message || "Failed to  update room ", { id: toastId })
+                const result = await updateRoom(id, payload as Room);
+                if (!result.success) {
+                    toast.error( "Failed to update room", { id: toastId });
+                    return
                 }
-                toast.success(result.message || "Room updated successfully", { id: toastId })
-                router.push('/manager-dashboard/rooms')
+                toast.success(result.message || "Room updated successfully", { id: toastId });
+                router.push('/manager-dashboard/rooms');
             } catch {
                 toast.error("Something went wrong", { id: toastId });
             }
@@ -98,12 +96,10 @@ const CreateRooms = ({ id }: { id: string }) => {
                     <div className="relative z-10 w-[46px] h-[46px] rounded-xl bg-[#EF9F27]/12 border border-[#EF9F27]/30 flex items-center justify-center text-xl flex-shrink-0">
                         🛏️
                     </div>
-
                     <div className="relative z-10">
                         <h1 className="text-white text-lg font-semibold leading-tight">
                             Update Room
                         </h1>
-
                         <p className="text-white/40 text-[11px] uppercase tracking-widest mt-0.5">
                             Boshonto Hotel & Dining · Room Update Panel
                         </p>
@@ -140,7 +136,6 @@ const CreateRooms = ({ id }: { id: string }) => {
                                                 <FieldLabel className="text-xs font-semibold text-[#042C53]">
                                                     Description
                                                 </FieldLabel>
-
                                                 <textarea
                                                     value={field.state.value}
                                                     onChange={(e) => field.handleChange(e.target.value)}
@@ -165,6 +160,14 @@ const CreateRooms = ({ id }: { id: string }) => {
                                         <FormField form={form} name="capacity" label="Capacity" placeholder="e.g. 2" type="number" />
                                         <FormField form={form} name="pricePerNight" label="Price / Night (৳)" placeholder="e.g. 5000" type="number" />
                                     </div>
+
+                                    {/* ✅ Status Field */}
+                                    <SelectField
+                                        form={form}
+                                        name="status"
+                                        label="Room Status"
+                                        options={["AVAILABLE", "BOOKED", "MAINTENANCE"]}
+                                    />
                                 </div>
 
                                 <SectionLabel title="Room Images" />
@@ -214,7 +217,6 @@ const FormField = ({ form, name, label, placeholder, type = "text" }: any) => (
                 <FieldLabel className="text-xs font-semibold text-[#042C53]">
                     {label}
                 </FieldLabel>
-
                 <Input
                     type={type}
                     value={field.state.value}
@@ -222,7 +224,6 @@ const FormField = ({ form, name, label, placeholder, type = "text" }: any) => (
                     placeholder={placeholder}
                     className="bg-[#F1EFE8] border-[#042C53]/10 rounded-xl text-sm placeholder:text-[#B4B2A9] focus:border-[#042C53]/30"
                 />
-
                 <FieldError
                     errors={field.state.meta.errors?.map((e: any) =>
                         typeof e === "string" ? e : e?.message ?? String(e)
@@ -240,7 +241,6 @@ const SelectField = ({ form, name, label, options }: any) => (
                 <FieldLabel className="text-xs font-semibold text-[#042C53]">
                     {label}
                 </FieldLabel>
-
                 <select
                     value={field.state.value}
                     onChange={(e) => field.handleChange(e.target.value)}
@@ -252,7 +252,6 @@ const SelectField = ({ form, name, label, options }: any) => (
                         </option>
                     ))}
                 </select>
-
                 <FieldError
                     errors={field.state.meta.errors?.map((e: any) =>
                         typeof e === "string" ? e : e?.message ?? String(e)
