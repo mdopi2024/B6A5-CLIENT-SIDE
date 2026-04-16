@@ -194,3 +194,36 @@
     border-color: var(--navy);
   }
 }
+
+
+
+
+
+
+/* for the view details page love image  */
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(28px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-up { animation: fade-up 0.65s cubic-bezier(.22,.68,0,1.2) both; }
+
+/* Heartbeat pulse on base heart */
+@keyframes heartbeat {
+  0%, 100% { transform: scale(1); }
+  14%       { transform: scale(1.2); }
+  28%       { transform: scale(1); }
+  42%       { transform: scale(1.15); }
+  56%       { transform: scale(1); }
+}
+.animate-heartbeat { animation: heartbeat 1.8s ease-in-out infinite; }
+
+/* Floating hearts rising up and fading */
+@keyframes floatUp {
+  0%   { opacity: 0; transform: translateY(0)   scale(0.6); }
+  20%  { opacity: 1; }
+  100% { opacity: 0; transform: translateY(-38px) scale(1.1); }
+}
+.animate-float-1 { animation: floatUp 2.2s ease-in-out infinite 0s;    left: 50%; }
+.animate-float-2 { animation: floatUp 2.2s ease-in-out infinite 0.7s;  left: 30%; }
+.animate-float-3 { animation: floatUp 2.2s ease-in-out infinite 1.4s;  left: 65%; }
