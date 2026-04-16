@@ -1,8 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { Room } from '@/types/room.interface';
 import { toast } from 'sonner';
 import Link from 'next/link';
+import { deleteRoom } from '@/actions/room.action';
 
 const statusConfig = {
   AVAILABLE: { label: 'Available', dot: '#639922', bg: '#EAF3DE', color: '#3B6D11' },
@@ -15,30 +17,29 @@ const RoomTable = ({ rooms }: { rooms: Room[] }) => {
   const booked = rooms.filter(r => r.status === 'BOOKED').length;
 
   // ✅ FIXED DELETE (no server action conflict)
-  const handleDeleteRoom = async (id: string) => {
-    const toastId = toast.loading("Deleting room in process...");
+ const handleDeleteRoom = async (id: string) => {
+  const toastId = toast.loading("Deleting room in process...");
 
-    try {
-      const res = await fetch(`/api/rooms/${id}`, {
-        method: "DELETE",
-      });
+  try {
+    // example API call (replace with your real service)
+    const res = await deleteRoom(id);
 
-      const data = await res.json();
-
-      if (!data?.success) {
-        toast.error(data?.message || "Failed to delete room", { id: toastId });
-        return;
-      }
-
-      toast.success(data?.message || "Room deleted successfully", {
+    if (!res?.success) {
+      toast.error(res.message || "Failed to delete room", {
         id: toastId,
       });
-    } catch (error: any) {
-      toast.error(error.message || "Something went wrong", {
-        id: toastId,
-      });
+      return; // ✅ IMPORTANT FIX
     }
-  };
+
+    toast.success(res.message || "Room deleted successfully", {
+      id: toastId,
+    });
+  } catch (error: any) {
+    toast.error(error.message || "Something went wrong", {
+      id: toastId,
+    });
+  }
+};
 
   return (
     <div className="rounded-2xl overflow-hidden border border-[#042C53]/10">
@@ -184,11 +185,10 @@ const RoomTable = ({ rooms }: { rooms: Room[] }) => {
                       <button
                         onClick={() => handleDeleteRoom(room.id)}
                         disabled={room.status === 'BOOKED'}
-                        className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-[11px] font-semibold ${
-                          room.status === 'BOOKED'
+                        className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-[11px] font-semibold ${room.status === 'BOOKED'
                             ? "bg-gray-200 text-gray-400 cursor-not-allowed"
                             : "bg-[#FCEBEB] text-[#A32D2D] border border-[#F09595] hover:bg-[#f8dada]"
-                        }`}
+                          }`}
                       >
                         🗑 Delete
                       </button>
