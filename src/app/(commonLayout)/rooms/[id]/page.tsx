@@ -70,7 +70,7 @@ const ViewDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
             <div className="absolute bottom-6 right-6 text-right">
               <p className="text-[11px] text-white/60 uppercase tracking-widest mb-0.5">per night</p>
               <p className="font-['Playfair_Display'] text-[52px] font-bold text-[#EF9F27] leading-none">
-                <sup className="text-xl font-normal align-super">$</sup>
+                <sup className="text-xl font-normal align-super">৳</sup>
                 {data.pricePerNight}
               </p>
               <p className="text-[12px] text-white/50 mt-0.5">taxes & fees included</p>
