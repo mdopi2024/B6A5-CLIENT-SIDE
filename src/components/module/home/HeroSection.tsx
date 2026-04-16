@@ -47,7 +47,7 @@ const fadeUp: Variants = {
 
 const HeroSection = () => {
   return (
-    <section className="bg-[#FDF6EC] py-12 px-3 md:px-12 lg:px-20">
+    <section className=" py-12 px-3 md:px-12 lg:px-20">
       
       {/* ❗ NO motion on wrapper (IMPORTANT FIX) */}
       <div className="max-w-7xl mx-auto border border-[#042C53]/10 rounded-3xl p-6 md:p-10 bg-white/70 backdrop-blur-sm shadow-lg">

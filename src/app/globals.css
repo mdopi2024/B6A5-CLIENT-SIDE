@@ -227,3 +227,39 @@
 .animate-float-1 { animation: floatUp 2.2s ease-in-out infinite 0s;    left: 50%; }
 .animate-float-2 { animation: floatUp 2.2s ease-in-out infinite 0.7s;  left: 30%; }
 .animate-float-3 { animation: floatUp 2.2s ease-in-out infinite 1.4s;  left: 65%; }
+
+/* footer */
+
+@keyframes floatUp {
+  0% {
+    opacity: 0;
+    transform: translateY(0) scale(0.6);
+  }
+  20% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-38px) scale(1.1);
+  }
+}
+
+.animate-float-1 {
+  position: absolute;
+  left: 50%;
+  animation: floatUp 2.2s ease-in-out infinite;
+}
+
+.animate-float-2 {
+  position: absolute;
+  left: 30%;
+  animation: floatUp 2.2s ease-in-out infinite;
+  animation-delay: 0.7s;
+}
+
+.animate-float-3 {
+  position: absolute;
+  left: 65%;
+  animation: floatUp 2.2s ease-in-out infinite;
+  animation-delay: 1.4s;
+}
