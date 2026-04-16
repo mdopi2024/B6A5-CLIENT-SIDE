@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { Room } from '@/types/room.interface';
 import { toast } from 'sonner';
-import { deleteRoom } from '@/actions/room.action';
 import Link from 'next/link';
 
 const statusConfig = {
@@ -16,18 +14,23 @@ const RoomTable = ({ rooms }: { rooms: Room[] }) => {
   const available = rooms.filter(r => r.status === 'AVAILABLE').length;
   const booked = rooms.filter(r => r.status === 'BOOKED').length;
 
+  // ✅ FIXED DELETE (no server action conflict)
   const handleDeleteRoom = async (id: string) => {
     const toastId = toast.loading("Deleting room in process...");
 
     try {
-      // example API call (replace with your real service)
-      const res = await deleteRoom(id);
+      const res = await fetch(`/api/rooms/${id}`, {
+        method: "DELETE",
+      });
 
-      if (!res?.success) {
-          toast.error(res.message || "Failed to delete room", { id: toastId, });
+      const data = await res.json();
+
+      if (!data?.success) {
+        toast.error(data?.message || "Failed to delete room", { id: toastId });
+        return;
       }
 
-      toast.success(res.message ||"Room deleted successfully", {
+      toast.success(data?.message || "Room deleted successfully", {
         id: toastId,
       });
     } catch (error: any) {
@@ -42,13 +45,22 @@ const RoomTable = ({ rooms }: { rooms: Room[] }) => {
       <div className="h-[3px] bg-gradient-to-r from-[#042C53] to-[#EF9F27]" />
 
       {/* Header */}
-      <div className="bg-[#042C53] px-5 py-4 flex items-center justify-between relative overflow-hidden"
-        style={{ backgroundImage: 'radial-gradient(circle,rgba(255,255,255,0.04) 1px,transparent 1px)', backgroundSize: '18px 18px' }}>
+      <div
+        className="bg-[#042C53] px-5 py-4 flex items-center justify-between relative overflow-hidden"
+        style={{
+          backgroundImage: 'radial-gradient(circle,rgba(255,255,255,0.04) 1px,transparent 1px)',
+          backgroundSize: '18px 18px'
+        }}
+      >
         <div className="relative z-10 flex items-center gap-3">
-          <div className="w-9 h-9 rounded-lg bg-[#EF9F27]/12 border border-[#EF9F27]/28 flex items-center justify-center text-base">🛏️</div>
+          <div className="w-9 h-9 rounded-lg bg-[#EF9F27]/12 border border-[#EF9F27]/28 flex items-center justify-center text-base">
+            🛏️
+          </div>
           <div>
             <p className="text-white text-sm font-semibold">Room management</p>
-            <p className="text-white/40 text-[10px] uppercase tracking-widest mt-0.5">Boshonto Hotel & Dining</p>
+            <p className="text-white/40 text-[10px] uppercase tracking-widest mt-0.5">
+              Boshonto Hotel & Dining
+            </p>
           </div>
         </div>
       </div>
@@ -63,8 +75,12 @@ const RoomTable = ({ rooms }: { rooms: Room[] }) => {
           { label: 'Booked', value: booked, color: '#185FA5' },
         ].map(s => (
           <div key={s.label} className="px-5 py-3">
-            <p className="text-[10px] uppercase tracking-widest text-[#B4B2A9] font-medium">{s.label}</p>
-            <p className="text-xl font-semibold mt-0.5" style={{ color: s.color }}>{s.value}</p>
+            <p className="text-[10px] uppercase tracking-widest text-[#B4B2A9] font-medium">
+              {s.label}
+            </p>
+            <p className="text-xl font-semibold mt-0.5" style={{ color: s.color }}>
+              {s.value}
+            </p>
           </div>
         ))}
       </div>
@@ -74,8 +90,11 @@ const RoomTable = ({ rooms }: { rooms: Room[] }) => {
         <table className="w-full border-collapse" style={{ minWidth: 700 }}>
           <thead>
             <tr className="bg-[#F1EFE8]">
-              {['Room no.', 'Title', 'Type', 'Bed', 'Floor', 'Cap.', 'Price/night', 'Status', 'Actions'].map(h => (
-                <th key={h} className="px-4 py-2.5 text-left text-[10px] font-semibold uppercase tracking-widest text-[#5F5E5A] border-b border-[#042C53]/08 whitespace-nowrap last:text-center">
+              {['Image', 'Room no.', 'Title', 'Type', 'Bed', 'Floor', 'Cap.', 'Price/night', 'Status', 'Actions'].map(h => (
+                <th
+                  key={h}
+                  className="px-4 py-2.5 text-left text-[10px] font-semibold uppercase tracking-widest text-[#5F5E5A] border-b border-[#042C53]/08 whitespace-nowrap last:text-center"
+                >
                   {h}
                 </th>
               ))}
@@ -85,14 +104,35 @@ const RoomTable = ({ rooms }: { rooms: Room[] }) => {
           <tbody>
             {rooms.map(room => {
               const s = statusConfig[room.status as keyof typeof statusConfig];
+
               return (
-                <tr key={room.id} className="border-b border-[#042C53]/06 last:border-0 hover:bg-[#F8F7F3] transition-colors">
+                <tr
+                  key={room.id}
+                  className="border-b border-[#042C53]/06 last:border-0 hover:bg-[#F8F7F3] transition-colors"
+                >
+                  {/* IMAGE (safe) */}
+                  <td className="px-4 py-3">
+                    {room.images ? (
+                      <img
+                        src={room.images}
+                        alt={room.title}
+                        className="w-12 h-12 rounded-md object-cover border border-[#042C53]/10"
+                      />
+                    ) : (
+                      <div className="w-12 h-12 rounded-md flex items-center justify-center bg-[#F1EFE8] text-[10px] text-[#888780] border border-[#042C53]/10">
+                        No Image
+                      </div>
+                    )}
+                  </td>
+
                   <td className="px-4 py-3">
                     <p className="text-xs font-semibold text-[#042C53]">#{room.roomNumber}</p>
                     <p className="text-[11px] text-[#888780]">Floor {room.floor}</p>
                   </td>
 
-                  <td className="px-4 py-3 text-[13px] max-w-[160px] truncate">{room.title}</td>
+                  <td className="px-4 py-3 text-[13px] max-w-[160px] truncate">
+                    {room.title}
+                  </td>
 
                   <td className="px-4 py-3">
                     <span className="text-[11px] font-medium px-2 py-0.5 rounded-full bg-[#F1EFE8] text-[#5F5E5A] border border-[#042C53]/10">
@@ -100,14 +140,22 @@ const RoomTable = ({ rooms }: { rooms: Room[] }) => {
                     </span>
                   </td>
 
-                  <td className="px-4 py-3 text-[12px] text-[#888780]">{room.bedType}</td>
+                  <td className="px-4 py-3 text-[12px] text-[#888780]">
+                    {room.bedType}
+                  </td>
 
-                  <td className="px-4 py-3 text-[13px] text-[#5F5E5A]">{room.floor}</td>
+                  <td className="px-4 py-3 text-[13px] text-[#5F5E5A]">
+                    {room.floor}
+                  </td>
 
-                  <td className="px-4 py-3 text-[13px] text-[#5F5E5A]">{room.capacity}</td>
+                  <td className="px-4 py-3 text-[13px] text-[#5F5E5A]">
+                    {room.capacity}
+                  </td>
 
                   <td className="px-4 py-3">
-                    <span className="text-[13px] font-semibold text-[#042C53]">৳{room.pricePerNight}</span>
+                    <span className="text-[13px] font-semibold text-[#042C53]">
+                      ৳{room.pricePerNight}
+                    </span>
                     <span className="text-[11px] text-[#b4b2a9]"> /night</span>
                   </td>
 
@@ -124,17 +172,23 @@ const RoomTable = ({ rooms }: { rooms: Room[] }) => {
                   <td className="px-4 py-3">
                     <div className="flex items-center justify-center gap-2">
 
-                      {/* Edit Button */}
-                      <Link href={`/manager-dashboard/update-room/${room.id}`}
-                        className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#042C53] text-[#EF9F27] text-[11px] font-semibold transition-all duration-200 hover:bg-[#053b6f] hover:scale-105 active:scale-95"
+                      {/* Edit */}
+                      <Link
+                        href={`/manager-dashboard/update-room/${room.id}`}
+                        className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#042C53] text-[#EF9F27] text-[11px] font-semibold hover:bg-[#053b6f]"
                       >
                         ✏️ Edit
                       </Link>
 
-                      {/* Delete Button */}
+                      {/* Delete */}
                       <button
-                        onClick={() =>handleDeleteRoom(room.id)}
-                        className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#FCEBEB] text-[#A32D2D] border border-[#F09595] text-[11px] font-semibold transition-all duration-200 hover:bg-[#f8dada] hover:scale-105 active:scale-95"
+                        onClick={() => handleDeleteRoom(room.id)}
+                        disabled={room.status === 'BOOKED'}
+                        className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-[11px] font-semibold ${
+                          room.status === 'BOOKED'
+                            ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                            : "bg-[#FCEBEB] text-[#A32D2D] border border-[#F09595] hover:bg-[#f8dada]"
+                        }`}
                       >
                         🗑 Delete
                       </button>
