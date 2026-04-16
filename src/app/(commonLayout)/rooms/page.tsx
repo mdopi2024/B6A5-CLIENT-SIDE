@@ -1,11 +1,17 @@
-import React from 'react';
+import RoomCard from '@/components/module/room/RoomCard';
+import { roomService } from '@/services/room.services';
+import { Room } from '@/types/room.interface';
 
-const RomePage = () => {
-    return (
-        <div>
-            i am rooms page
-        </div>
-    );
+const RoomPage = async () => {
+  const { data } = await roomService.getAllRooms();
+
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">
+      {data?.map((room: Room) => (
+        <RoomCard key={room.id} room={room} />
+      ))}
+    </div>
+  );
 };
 
-export default RomePage;
+export default RoomPage;
