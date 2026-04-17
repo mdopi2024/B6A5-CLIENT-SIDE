@@ -5,7 +5,7 @@ import { Room } from '@/types/room.interface';
 import { toast } from 'sonner';
 import Link from 'next/link';
 import { deleteRoom } from '@/actions/room.action';
-
+import { authClient } from '@/lib/auth-client';
 
 const statusConfig = {
   AVAILABLE: { label: 'Available', dot: '#639922', bg: '#EAF3DE', color: '#3B6D11' },
@@ -13,13 +13,15 @@ const statusConfig = {
   MAINTENANCE: { label: 'Maintenance', dot: '#BA7517', bg: '#FAEEDA', color: '#854F0B' },
 };
 
-const RoomTable = ({ rooms }: { rooms: Room[] }) => {
+const AdminRoomTable = ({ rooms }: { rooms: Room[] }) => {
   const available = rooms.filter(r => r.status === 'AVAILABLE').length;
   const booked = rooms.filter(r => r.status === 'BOOKED').length;
 
   // ✅ FIXED DELETE (no server action conflict)
  const handleDeleteRoom = async (id: string) => {
   const toastId = toast.loading("Deleting room in process...");
+  const data = authClient.useSession();
+  console.log(data)
   try {
     // example API call (replace with your real service)
     const res = await deleteRoom(id);
@@ -175,7 +177,7 @@ const RoomTable = ({ rooms }: { rooms: Room[] }) => {
 
                       {/* Edit */}
                       <Link
-                        href={`/manager-dashboard/update-room/${room.id}`}
+                        href={`/admin-dashboard/update-room/${room.id}`}
                         className="flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#042C53] text-[#EF9F27] text-[11px] font-semibold hover:bg-[#053b6f]"
                       >
                         ✏️ Edit
@@ -207,4 +209,4 @@ const RoomTable = ({ rooms }: { rooms: Room[] }) => {
   );
 };
 
-export default RoomTable;
+export default AdminRoomTable;

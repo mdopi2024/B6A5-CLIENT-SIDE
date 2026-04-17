@@ -1,9 +1,14 @@
-import React from 'react';
+import { getAllRooms } from '@/actions/room.action';
+import AdminRoomTable from '@/components/module/admin/AdminRoomTable';
 
-const Rooms = () => {
+
+
+const Rooms =async () => {
+const {data}=await getAllRooms()
+
     return (
         <div>
-            i am rooms page
+           <AdminRoomTable rooms={data}></AdminRoomTable>
         </div>
     );
 };

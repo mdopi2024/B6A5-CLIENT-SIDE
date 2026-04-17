@@ -26,7 +26,7 @@ const zodForm = z.object({
     status: z.enum(["AVAILABLE", "BOOKED", "MAINTENANCE"]),
 });
 
-const CreateRooms = ({ id }: { id: string }) => {
+const AdminRoomUpdateForm = ({ id }: { id: string }) => {
     const router = useRouter();
     const [room, setRoom] = useState<Room | null>(null);
 
@@ -69,7 +69,7 @@ const CreateRooms = ({ id }: { id: string }) => {
                     return
                 }
                 toast.success(result.message || "Room updated successfully", { id: toastId });
-                router.push('/manager-dashboard/rooms');
+                router.push('/admin-dashboard/rooms');
             } catch {
                 toast.error("Something went wrong", { id: toastId });
             }
@@ -198,7 +198,7 @@ const CreateRooms = ({ id }: { id: string }) => {
     );
 };
 
-export default CreateRooms;
+export default AdminRoomUpdateForm;
 
 /* ---------------- Helper Components ---------------- */
 
