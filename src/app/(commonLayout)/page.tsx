@@ -1,4 +1,5 @@
 
+import AboutSection from "@/components/module/home/About";
 import Footer from "@/components/module/home/Footer";
 import GallerySection from "@/components/module/home/GellarySection";
 import HeroSection from "@/components/module/home/HeroSection";
@@ -11,6 +12,10 @@ export default async function Home() {
     <div>
       {/* here section */}
       <div><HeroSection></HeroSection></div>
+      {/* about section */}
+      <div>
+        <AboutSection></AboutSection>
+      </div>
       {/* gellay section */}
       <div id="gallery">
         <GallerySection></GallerySection>
@@ -24,7 +29,7 @@ export default async function Home() {
         <Footer></Footer>
       </div>
     </div>
-    
-    
+
+
   );
 }
