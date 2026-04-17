@@ -13,7 +13,7 @@ const Loading = () => {
         
         {/* Text */}
         <p className="text-sm text-[#042C53]/70 tracking-wide">
-          Loading rooms...
+          Loading booking...
         </p>
 
       </div>
