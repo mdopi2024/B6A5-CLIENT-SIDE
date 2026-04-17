@@ -1,9 +1,12 @@
-import React from 'react';
+import Profile from '@/components/module/shared/Profile';
+import { AuthServices } from '@/services/auth.services';
 
-const DashoboardPage = () => {
+
+const DashoboardPage = async() => {
+  const {user}= await AuthServices.session()
   return (
     <div>
-      i am dashboard page
+      <Profile user={user}></Profile>
     </div>
   );
 };

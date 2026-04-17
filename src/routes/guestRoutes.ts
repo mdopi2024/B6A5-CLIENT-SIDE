@@ -9,6 +9,10 @@ export const guestRoutes:Routes[] = [
              title:"my bookings",
              url:"#"
             },
+           {
+             title:"Profile",
+             url:"/dashboard"
+            },
      
         ]
     }
