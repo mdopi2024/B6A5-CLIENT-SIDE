@@ -12,7 +12,7 @@ export default async function Home() {
       {/* here section */}
       <div><HeroSection></HeroSection></div>
       {/* gellay section */}
-      <div>
+      <div id="gallery">
         <GallerySection></GallerySection>
       </div>
       {/* services section */}

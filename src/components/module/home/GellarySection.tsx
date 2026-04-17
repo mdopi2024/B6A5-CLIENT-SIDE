@@ -37,7 +37,7 @@ const images = [
 
 const GallerySection = () => {
   return (
-    <section className="pt-12 px-6 md:px-12 lg:px-20">
+    <section className="pt-12 px-3 md:px-6 lg:px-10">
 
       {/* TITLE */}
       <div className="max-w-3xl mx-auto text-center mb-14">
@@ -46,7 +46,7 @@ const GallerySection = () => {
         </h2>
 
         <p className="mt-4 text-gray-600">
-          Moments of luxury, comfort, and unforgettable experiences at Bosonto Hotel.
+          Moments of luxury, comfort, and unforgettable experiences at Boshonto Hotel.
         </p>
       </div>
 
@@ -74,7 +74,7 @@ const GallerySection = () => {
                 alt={`Gallery image ${index + 1}`}
                 fill
                 priority={index === 0}
-                quality={95}
+                quality={75}
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 className="object-cover object-center transition-transform duration-500 group-hover:scale-105"
               />

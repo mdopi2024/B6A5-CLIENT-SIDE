@@ -68,7 +68,7 @@ const services = [
 
 const ServicesSection = () => {
   return (
-    <section className="pt-12 px-6 md:px-12 lg:px-20">
+    <section className="pt-12 px-3 md:px-6 lg:px-10">
 
       {/* HEADER */}
       <div className="max-w-3xl mx-auto text-center mb-14">

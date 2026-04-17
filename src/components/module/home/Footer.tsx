@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 "use client";
 
 import Link from "next/link";
@@ -13,7 +14,7 @@ const Footer = () => {
                     {/* BRAND */}
                     <div>
                         <h2 className="text-2xl font-bold text-white">
-                            Bosonto <span className="text-[#EF9F27]">Hotel</span>
+                            Boshonto <span className="text-[#EF9F27]">Hotel</span>
                         </h2>
 
                         <p className="mt-4 text-gray-300 text-sm">
@@ -45,9 +46,9 @@ const Footer = () => {
                     <div>
                         <h3 className="font-semibold mb-4">Contact</h3>
                         <ul className="space-y-2 text-gray-300 text-sm">
-                            <li>📍 Kaliganj, Dhaka</li>
+                            <li>📍 cox's bazar, Chittagong</li>
                             <li>📞 +880 1XXXXXXXXX</li>
-                            <li>💌 support@bosontohotel.com</li>
+                            <li>💌 support@boshontohotel.com</li>
                         </ul>
                     </div>
 
@@ -72,7 +73,7 @@ const Footer = () => {
 
                         {/* TEXT (STAYS CLEAR ALWAYS) */}
                         <p className="relative z-10 text-center px-6">
-                            Thanks for visiting <span className="text-[#EF9F27] font-semibold">Bosonto Hotel</span>
+                            Thanks for visiting <span className="text-[#EF9F27] font-semibold">Boshonto Hotel</span>
                         </p>
 
                     </div>
