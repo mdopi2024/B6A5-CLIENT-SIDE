@@ -12,6 +12,10 @@ export const getallBooking = async()=>{
     const result = await bookingServices.getAllbooking();
       return await result
 }
+export const getAllMyBooking = async()=>{
+    const result = await bookingServices.getAllMyBooking();
+      return await result
+}
 export const updateBookingStatus = async(id:string,payload:{bookingStatus:string})=>{
     const result = await bookingServices.updateBookingStatus(id as string, payload);
      revalidateTag('all-booking', "max")

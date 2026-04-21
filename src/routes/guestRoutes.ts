@@ -7,7 +7,7 @@ export const guestRoutes:Routes[] = [
         items:[
            {
              title:"my bookings",
-             url:"#"
+             url:"/dashboard/my-booking"
             },
            {
              title:"Profile",
