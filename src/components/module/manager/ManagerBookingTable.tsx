@@ -1,15 +1,23 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
 import { IBooking } from "@/types/booking.interface";
 import Link from "next/link";
 import { useState } from "react";
 
-type BookingStatus = "PENDING" | "CONFIRMED" | "CANCELLED";
+type BookingStatus =
+  | "PENDING"
+  | "CONFIRMED"
+  | "CANCELLED"
+  | "CHECKED_IN"
+  | "CHECKED_OUT";
 
 const statusConfig = {
   PENDING: { label: "Pending", bg: "#FAEEDA", color: "#854F0B" },
   CONFIRMED: { label: "Confirmed", bg: "#EAF3DE", color: "#3B6D11" },
   CANCELLED: { label: "Cancelled", bg: "#FDEAEA", color: "#B42318" },
+  CHECKED_IN: { label: "Checked In", bg: "#E6F0FF", color: "#1D4ED8" },
+  CHECKED_OUT: { label: "Checked Out", bg: "#EDE9FE", color: "#6D28D9" },
 };
 
 const paymentConfig = {
@@ -18,13 +26,19 @@ const paymentConfig = {
 };
 
 const ManagerBookingTable = ({ payload }: { payload: IBooking[] }) => {
-  const [statuses, setStatuses] = useState<Record<string, BookingStatus>>(
-    Object.fromEntries(payload.map((b) => [b.id, b.bookingStatus as BookingStatus]))
+  const [statuses] = useState<Record<string, BookingStatus>>(
+    Object.fromEntries(
+      payload.map((b) => [
+        b.id,
+        (b.bookingStatus as BookingStatus) ?? "PENDING",
+      ])
+    )
   );
 
   const total = payload.length;
   const pending = payload.filter((b) => b.bookingStatus === "PENDING").length;
   const confirmed = payload.filter((b) => b.bookingStatus === "CONFIRMED").length;
+
   return (
     <div className="rounded-2xl overflow-hidden border border-[#042C53]/10">
 
@@ -80,9 +94,22 @@ const ManagerBookingTable = ({ payload }: { payload: IBooking[] }) => {
 
           <tbody>
             {payload.map((booking) => {
-              const status = statuses[booking.id];
-              const s = statusConfig[status];
-              const p = paymentConfig[booking.paymentStatus as keyof typeof paymentConfig];
+              const status =
+                (statuses[booking.id] as BookingStatus) ?? "PENDING";
+
+              const s =
+                statusConfig[status] ?? {
+                  label: "Unknown",
+                  bg: "#E5E7EB",
+                  color: "#374151",
+                };
+
+              const p =
+                paymentConfig[booking.paymentStatus as keyof typeof paymentConfig] ?? {
+                  label: "Unknown",
+                  bg: "#E5E7EB",
+                  color: "#374151",
+                };
 
               return (
                 <tr key={booking.id} className="border-b hover:bg-[#F8F7F3]">
@@ -141,11 +168,12 @@ const ManagerBookingTable = ({ payload }: { payload: IBooking[] }) => {
 
                   {/* ACTION */}
                   <td className="px-4 py-3">
-                    <Link href={`/manager-dashboard/bookings/${booking.id}`}
+                    <Link
+                      href={`/manager-dashboard/bookings/${booking.id}`}
                       className="px-3 py-1.5 text-[11px] rounded-lg font-medium bg-[#042C53] text-[#EF9F27] hover:opacity-90 active:scale-95 transition"
                     >
                       Update booking status
-                    </Link >
+                    </Link>
                   </td>
 
                 </tr>
