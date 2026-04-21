@@ -1,9 +1,15 @@
-import React from 'react';
+import { getallBooking } from '@/actions/booking.action';
+import ManagerBookingTable from '@/components/module/manager/ManagerBookingTable';
 
-const Booking = () => {
+
+
+
+
+const Booking = async() => {
+    const  {data}= await getallBooking()
     return (
         <div>
-            i am booking page
+            <ManagerBookingTable payload={data}></ManagerBookingTable>
         </div>
     );
 };
