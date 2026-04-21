@@ -23,7 +23,7 @@ const zodForm = z.object({
     capacity: z.coerce.number().min(1, "Capacity is required"),
     pricePerNight: z.coerce.number().min(1, "Price is required"),
     images: z.string().optional(),
-    status: z.enum(["AVAILABLE", "BOOKED", "MAINTENANCE"]),
+    status: z.enum(["AVAILABLE", "MAINTENANCE"]),
 });
 
 const CreateRooms = ({ id }: { id: string }) => {
@@ -167,7 +167,7 @@ const CreateRooms = ({ id }: { id: string }) => {
                                         form={form}
                                         name="status"
                                         label="Room Status"
-                                        options={["AVAILABLE", "BOOKED", "MAINTENANCE"]}
+                                        options={["AVAILABLE", "MAINTENANCE"]}
                                     />
                                 </div>
 

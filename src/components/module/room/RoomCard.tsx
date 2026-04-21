@@ -73,16 +73,12 @@ const RoomCard = ({ room }: { room: Room }) => {
         <div className="flex gap-2 pt-3">
 
           {/* BOOK NOW */}
-          <button
-            disabled={room.status === 'BOOKED'}
-            className={`flex-1 py-2 rounded-lg text-sm font-semibold transition-all ${
-              room.status === 'BOOKED'
-                ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                : "bg-[#EF9F27] text-white hover:bg-[#d98c1f]"
-            }`}
+          <Link
+            href={`/create-booking/${room.id}`}
+            className="flex-1 py-2 rounded-lg text-sm font-semibold transition-all text-center bg-[#EF9F27] text-white hover:bg-[#d98c1f]"
           >
             Book Now
-          </button>
+          </Link>
 
           {/* VIEW DETAILS */}
           <Link
