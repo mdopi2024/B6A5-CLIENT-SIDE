@@ -74,8 +74,14 @@ const RoomCard = ({ room }: { room: Room }) => {
 
           {/* BOOK NOW */}
           <Link
-            href={`/create-booking/${room.id}`}
-            className="flex-1 py-2 rounded-lg text-sm font-semibold transition-all text-center bg-[#EF9F27] text-white hover:bg-[#d98c1f]"
+            href={room.status === "MAINTENANCE" ? "#" : `/create-booking/${room.id}`}
+            aria-disabled={room.status === "MAINTENANCE"}
+            className={`flex-1 py-2 rounded-lg text-sm font-semibold text-center transition-all
+      ${room.status === "MAINTENANCE"
+                ? "bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-[#EF9F27] text-white hover:bg-[#d98c1f]"
+              }
+    `}
           >
             Book Now
           </Link>

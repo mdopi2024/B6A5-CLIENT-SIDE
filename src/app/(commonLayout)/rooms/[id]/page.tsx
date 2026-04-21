@@ -6,7 +6,7 @@ const ViewDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
   const { data } = await roomService.getRoomById(id);
 
-  const isBooked = data.status === 'BOOKED';
+  const isBooked = data.status === 'MAINTENANCE';
 
   return (
     <main className="min-h-screen bg-[#f5f2ed] flex flex-col items-center justify-center px-4 py-16">
@@ -121,7 +121,7 @@ const ViewDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
             {/* Actions */}
             <div className="flex gap-3 items-center">
 
-              {/* ✅ Book Now — disabled if BOOKED */}
+              {/* ✅ Book Now — disabled if maintanace */}
               <button
                 disabled={isBooked}
                 className={`flex-1 py-4 px-8 rounded-xl text-[15px] font-medium tracking-wide transition-all
