@@ -1,12 +1,24 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { getReviewByRoomId } from '@/actions/review.actions';
 import { roomService } from '@/services/room.services';
 import Link from 'next/link';
-import React from 'react';
 
 const ViewDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
-  const { data } = await roomService.getRoomById(id);
 
+  // ✅ Parallel fetching
+  const [{ data }, reviewResponse] = await Promise.all([
+    roomService.getRoomById(id),
+    getReviewByRoomId(id),
+  ]);
+
+  const reviews = reviewResponse?.data ?? [];
   const isBooked = data.status === 'MAINTENANCE';
+
+  const averageRating =
+    reviews.length > 0
+      ? (reviews.reduce((sum: number, r: any) => sum + (r.rating ?? 0), 0) / reviews.length).toFixed(1)
+      : null;
 
   return (
     <main className="min-h-screen bg-[#f5f2ed] flex flex-col items-center justify-center px-4 py-16">
@@ -28,8 +40,6 @@ const ViewDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
 
           {/* Image Section */}
           <div className="relative h-[360px] overflow-hidden group">
-
-            {/* ✅ Null image fallback */}
             {data.images ? (
               <img
                 src={data.images}
@@ -120,8 +130,6 @@ const ViewDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
 
             {/* Actions */}
             <div className="flex gap-3 items-center">
-
-              {/* ✅ Book Now — disabled if maintanace */}
               <button
                 disabled={isBooked}
                 className={`flex-1 py-4 px-8 rounded-xl text-[15px] font-medium tracking-wide transition-all
@@ -133,21 +141,95 @@ const ViewDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
                 {isBooked ? 'Currently Unavailable' : 'Book Now'}
               </button>
 
-              {/* ✅ Animated floating hearts — non-clickable */}
               <div className="relative w-[54px] h-[54px] flex items-center justify-center select-none pointer-events-none">
-                {/* Floating hearts */}
                 <span className="absolute text-[11px] animate-float-1 opacity-0">❤️</span>
                 <span className="absolute text-[9px]  animate-float-2 opacity-0">❤️</span>
                 <span className="absolute text-[13px] animate-float-3 opacity-0">❤️</span>
-                {/* Base heart */}
                 <span className="text-[26px] animate-heartbeat drop-shadow-sm">❤️</span>
               </div>
-
             </div>
 
-            {/* Review placeholder */}
-            <div className="mt-7 p-5 bg-[#f5f2ed] border-[1.5px] border-dashed border-[#ddd8ce] rounded-2xl text-center text-[#aaa] text-sm tracking-wide">
-              ⭐ <span className="text-[#EF9F27] font-medium">Guest Reviews</span> section coming soon
+            {/* ✅ Reviews Section */}
+            <div className="mt-7 p-5 bg-[#f5f2ed] border-[1.5px] border-dashed border-[#ddd8ce] rounded-2xl">
+
+              {/* Header */}
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <span className="text-base">⭐</span>
+                  <span className="text-[#EF9F27] font-medium text-sm tracking-wide">Guest Reviews</span>
+                  {reviews.length > 0 && (
+                    <span className="text-[11px] text-[#aaa] bg-white border border-[#ede9e1] rounded-full px-2 py-0.5 tracking-wide">
+                      {reviews.length} {reviews.length === 1 ? 'review' : 'reviews'}
+                    </span>
+                  )}
+                </div>
+                {averageRating && (
+                  <div className="flex items-center gap-1.5 bg-white border border-[#ede9e1] rounded-lg px-3 py-1.5">
+                    <span className="text-[#EF9F27] text-sm">★</span>
+                    <span className="text-[#042c53] font-semibold text-sm">{averageRating}</span>
+                    <span className="text-[#aaa] text-[11px]">/ 5</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Review list or empty state */}
+              {reviews.length === 0 ? (
+                <p className="text-center text-[#aaa] text-sm tracking-wide py-2">
+                  No reviews yet. Be the first to share your experience!
+                </p>
+              ) : (
+                <div className="flex flex-col gap-3">
+                  {reviews.map((review: any, index: number) => (
+                    <div
+                      key={review.id ?? index}
+                      className="bg-white border border-[#ede9e1] rounded-xl p-4 hover:border-[#EF9F27]/40 hover:shadow-[0_4px_16px_rgba(239,159,39,0.08)] transition-all"
+                    >
+                      {/* Reviewer row */}
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center gap-2.5">
+                          {/* Avatar */}
+                          <div className="w-8 h-8 rounded-full bg-[#042c53] flex items-center justify-center text-white text-[12px] font-semibold uppercase shrink-0">
+                            {review.user?.name?.[0] ?? review.guestName?.[0] ?? '?'}
+                          </div>
+                          <div>
+                            <p className="text-[13px] text-[#042c53] font-semibold leading-tight">
+                              {review.user?.name ?? review.guestName ?? 'Anonymous'}
+                            </p>
+                            {(review.createdAt || review.date) && (
+                              <p className="text-[10px] text-[#aaa] tracking-wide">
+                                {new Date(review.createdAt ?? review.date).toLocaleDateString('en-US', {
+                                  year: 'numeric',
+                                  month: 'short',
+                                  day: 'numeric',
+                                })}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        {/* Star rating */}
+                        {review.rating != null && (
+                          <div className="flex items-center gap-0.5">
+                            {Array.from({ length: 5 }).map((_, i) => (
+                              <span
+                                key={i}
+                                className={`text-[13px] ${i < review.rating ? 'text-[#EF9F27]' : 'text-[#ddd]'}`}
+                              >
+                                ★
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                      {/* Comment */}
+                      {(review.comment ?? review.review) && (
+                        <p className="text-[13px] text-[#6b7280] leading-relaxed">
+                          {review.comment ?? review.review}
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
           </div>

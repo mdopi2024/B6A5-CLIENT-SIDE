@@ -22,19 +22,15 @@ export const reviewServices = {
             return error;
         }
     },
-    // getBookingById: async (id: string) => {
-    //     try {
-    //         const response = await fetch(`${Env.API_URL}/booking/${id}`, {
-    //             headers: {
-    //                 Cookie: await cookie()
-    //             }
-    //         });
-    //         const result = await response.json();
-    //         return result;
-    //     } catch (error) {
-    //         return error;
-    //     }
-    // },
+    getReviewByRoomId: async (id: string) => {
+        try {
+            const response = await fetch(`${Env.API_URL}/review/room/${id}`);
+            const result = await response.json();
+            return result;
+        } catch (error) {
+            return error;
+        }
+    },
 
 
 
