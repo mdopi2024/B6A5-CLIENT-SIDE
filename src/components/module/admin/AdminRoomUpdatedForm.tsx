@@ -23,7 +23,7 @@ const zodForm = z.object({
     capacity: z.coerce.number().min(1, "Capacity is required"),
     pricePerNight: z.coerce.number().min(1, "Price is required"),
     images: z.string().optional(),
-    status: z.enum(["AVAILABLE", "BOOKED", "MAINTENANCE"]),
+    status: z.enum(["AVAILABLE", "MAINTENANCE"]),
 });
 
 const AdminRoomUpdateForm = ({ id }: { id: string }) => {
@@ -50,7 +50,7 @@ const AdminRoomUpdateForm = ({ id }: { id: string }) => {
             capacity: room?.capacity || 0,
             pricePerNight: room?.pricePerNight || 0,
             images: room?.images || '',
-            status: room?.status || "AVAILABLE" as "AVAILABLE" | "BOOKED" | "MAINTENANCE",
+            status: room?.status || "AVAILABLE" as "AVAILABLE" | "MAINTENANCE",
         },
         validators: { onSubmit: zodForm },
         onSubmit: async ({ value }) => {
@@ -167,7 +167,7 @@ const AdminRoomUpdateForm = ({ id }: { id: string }) => {
                                         form={form}
                                         name="status"
                                         label="Room Status"
-                                        options={["AVAILABLE", "BOOKED", "MAINTENANCE"]}
+                                        options={["AVAILABLE", "MAINTENANCE"]}
                                     />
                                 </div>
 

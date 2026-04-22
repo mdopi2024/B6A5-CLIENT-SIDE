@@ -17,31 +17,32 @@ const AdminRoomTable = ({ rooms }: { rooms: Room[] }) => {
   const available = rooms.filter(r => r.status === 'AVAILABLE').length;
   const booked = rooms.filter(r => r.status === 'BOOKED').length;
 
-  // ✅ FIXED DELETE (no server action conflict)
- const handleDeleteRoom = async (id: string) => {
-  const toastId = toast.loading("Deleting room in process...");
   const data = authClient.useSession();
-  console.log(data)
-  try {
-    // example API call (replace with your real service)
-    const res = await deleteRoom(id);
 
-    if (!res?.success) {
-      toast.error(res.message || "Failed to delete room", {
+  // ✅ FIXED DELETE (no server action conflict)
+  const handleDeleteRoom = async (id: string) => {
+    const toastId = toast.loading("Deleting room in process...");
+
+    try {
+      // example API call (replace with your real service)
+      const res = await deleteRoom(id);
+
+      if (!res?.success) {
+        toast.error(res.message || "Failed to delete room", {
+          id: toastId,
+        });
+        return; // ✅ IMPORTANT FIX
+      }
+
+      toast.success(res.message || "Room deleted successfully", {
         id: toastId,
       });
-      return; // ✅ IMPORTANT FIX
+    } catch (error: any) {
+      toast.error(error.message || "Something went wrong", {
+        id: toastId,
+      });
     }
-
-    toast.success(res.message || "Room deleted successfully", {
-      id: toastId,
-    });
-  } catch (error: any) {
-    toast.error(error.message || "Something went wrong", {
-      id: toastId,
-    });
-  }
-};
+  };
 
   return (
     <div className="rounded-2xl overflow-hidden border border-[#042C53]/10">
@@ -188,8 +189,8 @@ const AdminRoomTable = ({ rooms }: { rooms: Room[] }) => {
                         onClick={() => handleDeleteRoom(room.id)}
                         disabled={room.status === 'BOOKED'}
                         className={`flex items-center gap-1 px-3 py-1.5 rounded-lg text-[11px] font-semibold ${room.status === 'BOOKED'
-                            ? "bg-gray-200 text-gray-400 cursor-not-allowed"
-                            : "bg-[#FCEBEB] text-[#A32D2D] border border-[#F09595] hover:bg-[#f8dada]"
+                          ? "bg-gray-200 text-gray-400 cursor-not-allowed"
+                          : "bg-[#FCEBEB] text-[#A32D2D] border border-[#F09595] hover:bg-[#f8dada]"
                           }`}
                       >
                         🗑 Delete
