@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { updateBookingStatus, updateBookingStatus2 } from "@/actions/booking.action";
+import { updateBookingStatus} from "@/actions/booking.action";
 import { IBooking } from "@/types/booking.interface";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 type BookingStatus =
   | "PENDING"
@@ -156,16 +157,19 @@ const GuestBookingTable = ({ payload }: { payload: IBooking[] }) => {
                       Cancel
                     </button>
 
-                    <button
-                      disabled={!canReview}
+                    <Link
+                      href={`/dashboard/review/${booking.roomId}`}
+                      onClick={(e) => {
+                        if (!canReview) e.preventDefault();
+                      }}
                       className={`px-3 py-1.5 text-[11px] rounded-lg font-medium transition
                         ${canReview
                           ? "bg-[#042C53] text-[#EF9F27] hover:opacity-90"
-                          : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                          : "bg-gray-200 text-gray-400 cursor-not-allowed pointer-events-none"
                         }`}
                     >
                       Review
-                    </button>
+                    </Link>
                   </td>
                 </tr>
               );
