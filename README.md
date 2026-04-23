@@ -11,9 +11,9 @@ Built with **Next.js**, **Tailwind CSS**, **shadcn/ui**, **TanStack Form**, and 
 
 | Resource | URL |
 |----------|-----|
-| 🖥️ Frontend Repository | # |
-| 🔗 Backend API | # |
-| 🚀 Live Demo (Vercel) | # |
+| 🖥️ Frontend Repository | https://github.com/mdopi2024/B6A5-CLIENT-SIDE |
+| 🖥️ Backend Repository | https://github.com/mdopi2024/B6A5-backend-server |
+| 🚀 Live Demo (Vercel) | https://boshonto-totel-management-frontend.vercel.app |
 
 ---
 

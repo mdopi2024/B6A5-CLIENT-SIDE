@@ -94,7 +94,7 @@ const Navbar = ({
           >
             <div className="relative">
               <img
-                src="/boshontologo.png"
+                src="/boshontoLogo.png"
                 className="w-11 h-11 rounded-full border-2 border-[#EF9F27]"
                 alt="boshontoLogo"
               />

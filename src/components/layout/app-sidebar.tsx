@@ -28,7 +28,7 @@ export function AppSidebar({ role, ...props }: { role: string } & React.Componen
         <div className="flex items-center gap-3">
           <div className="relative">
             <img
-              src="/boshontologo.png"
+              src="/boshontoLogo.png"
               className="w-11 h-11 rounded-full border-2 border-[#EF9F27]"
               alt="Boshonto logo"
             />
