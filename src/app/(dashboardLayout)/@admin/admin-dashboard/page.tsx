@@ -2,9 +2,9 @@ import Profile from "@/components/module/shared/Profile";
 import { AuthServices } from "@/services/auth.services";
 
 
-const AdminPage = async() => {
-    const {user} = await AuthServices.session();
-
+const AdminPage = async () => {
+    const { user } = await AuthServices.session();
+    if (!user) return null
     return (
         <div>
             <Profile user={user}></Profile>

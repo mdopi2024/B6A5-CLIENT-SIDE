@@ -21,7 +21,7 @@ import { createBooking } from "@/actions/booking.action";
 const schema = z.object({
     checkInDate: z.string().min(1, "Check-in required"),
     checkOutDate: z.string().min(1, "Check-out required"),
-    specialRequest: z.string().optional(),
+     specialRequest: z.string(), 
 }).refine(
     (d) => new Date(d.checkOutDate) > new Date(d.checkInDate),
     { message: "Check-out must be after check-in", path: ["checkOutDate"] }

@@ -11,6 +11,7 @@ type TUser = {
 };
 
 const Profile = ({ user }: { user: TUser }) => {
+   if (!user) return null
   const initials = user.name
     .split(" ")
     .map((n) => n[0])

@@ -19,12 +19,12 @@ const zodForm = z.object({
   roomNumber: z.string().min(1, "Room number is required"),
   floor: z.string(),
   title: z.string().min(1, "Title is required"),
-  description: z.string().optional(),
+  description: z.string(),
   roomType: z.enum(["SINGLE", "DOUBLE", "SUITE", "DELUXE"]),
   bedType: z.enum(["SINGLE", "DOUBLE", "QUEEN", "KING"]),
   capacity: z.string().min(1, "Capacity is required"),
   pricePerNight: z.string().min(1, "Price is required"),
-  images: z.string().optional(),
+  images: z.string(),
 });
 
 const CreateRooms = () => {

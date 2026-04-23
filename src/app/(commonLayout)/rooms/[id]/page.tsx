@@ -62,11 +62,10 @@ const ViewDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
               <span className="px-3.5 py-1.5 rounded-full text-[11px] font-medium tracking-widest uppercase bg-[rgba(239,159,39,0.18)] border border-[rgba(239,159,39,0.7)] text-[#EF9F27] backdrop-blur-md">
                 {data.roomType}
               </span>
-              <span className={`px-3.5 py-1.5 rounded-full text-[11px] font-medium tracking-widest uppercase backdrop-blur-md border ${
-                isBooked
-                  ? 'bg-[rgba(239,68,68,0.18)] border-[rgba(239,68,68,0.6)] text-red-400'
-                  : 'bg-[rgba(255,255,255,0.15)] border-[rgba(255,255,255,0.4)] text-white'
-              }`}>
+              <span className={`px-3.5 py-1.5 rounded-full text-[11px] font-medium tracking-widest uppercase backdrop-blur-md border ${isBooked
+                ? 'bg-[rgba(239,68,68,0.18)] border-[rgba(239,68,68,0.6)] text-red-400'
+                : 'bg-[rgba(255,255,255,0.15)] border-[rgba(255,255,255,0.4)] text-white'
+                }`}>
                 ● {data.status}
               </span>
             </div>
@@ -129,17 +128,23 @@ const ViewDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
             </div>
 
             {/* Actions */}
+            {/* Actions */}
             <div className="flex gap-3 items-center">
-              <button
-                disabled={isBooked}
-                className={`flex-1 py-4 px-8 rounded-xl text-[15px] font-medium tracking-wide transition-all
-                  ${isBooked
-                    ? 'bg-[#e5e0d8] text-[#bbb] cursor-not-allowed shadow-none'
-                    : 'bg-[#042c53] hover:bg-[#063a6e] text-white shadow-[0_6px_20px_rgba(4,44,83,0.22)] hover:shadow-[0_10px_28px_rgba(4,44,83,0.3)] hover:-translate-y-0.5 active:translate-y-0'
-                  }`}
-              >
-                {isBooked ? 'Currently Unavailable' : 'Book Now'}
-              </button>
+
+              {isBooked ? (
+                <span
+                  className="flex-1 py-4 px-8 rounded-xl text-[15px] text-center font-medium tracking-wide bg-[#e5e0d8] text-[#bbb] cursor-not-allowed shadow-none"
+                >
+                  Currently Unavailable
+                </span>
+              ) : (
+                <Link
+                  href={`/create-booking/${data.id}`}
+                  className="flex-1 py-4 px-8 rounded-xl text-[15px] text-center font-medium tracking-wide bg-[#042c53] hover:bg-[#063a6e] text-white shadow-[0_6px_20px_rgba(4,44,83,0.22)] hover:shadow-[0_10px_28px_rgba(4,44,83,0.3)] hover:-translate-y-0.5 active:translate-y-0 transition-all"
+                >
+                  Book Now
+                </Link>
+              )}
 
               <div className="relative w-[54px] h-[54px] flex items-center justify-center select-none pointer-events-none">
                 <span className="absolute text-[11px] animate-float-1 opacity-0">❤️</span>
@@ -147,6 +152,7 @@ const ViewDetails = async ({ params }: { params: Promise<{ id: string }> }) => {
                 <span className="absolute text-[13px] animate-float-3 opacity-0">❤️</span>
                 <span className="text-[26px] animate-heartbeat drop-shadow-sm">❤️</span>
               </div>
+
             </div>
 
             {/* ✅ Reviews Section */}

@@ -15,14 +15,14 @@ import { Room } from "@/types/room.interface";
 
 const zodForm = z.object({
     roomNumber: z.string().min(1, "Room number is required"),
-    floor: z.coerce.number() || 0,
+    floor: z.string(),
     title: z.string().min(1, "Title is required"),
-    description: z.string().optional(),
+    description: z.string(),
     roomType: z.enum(["SINGLE", "DOUBLE", "SUITE", "DELUXE"]),
     bedType: z.enum(["SINGLE", "DOUBLE", "QUEEN", "KING"]),
-    capacity: z.coerce.number().min(1, "Capacity is required"),
-    pricePerNight: z.coerce.number().min(1, "Price is required"),
-    images: z.string().optional(),
+    capacity: z.string().min(1, "Capacity is required"),
+    pricePerNight: z.string().min(1, "Price is required"),
+    images: z.string(),
     status: z.enum(["AVAILABLE", "MAINTENANCE"]),
 });
 
@@ -40,18 +40,18 @@ const CreateRooms = ({ id }: { id: string }) => {
     }, [id]);
 
     const form = useForm({
-        defaultValues: {
-            roomNumber: room?.roomNumber || 0,
-            floor: room?.floor || 0,
-            title: room?.title || "",
-            description: room?.description || "",
-            roomType: room?.roomType || "SINGLE" as "SINGLE" | "DOUBLE" | "SUITE" | "DELUXE",
-            bedType: room?.bedType || "SINGLE" as "SINGLE" | "DOUBLE" | "QUEEN" | "KING",
-            capacity: room?.capacity || 0,
-            pricePerNight: room?.pricePerNight || 0,
-            images: room?.images || '',
-            status: room?.status || "AVAILABLE" as "AVAILABLE" | "BOOKED" | "MAINTENANCE",
-        },
+       defaultValues: {
+    roomNumber: String(room?.roomNumber || ""),
+    floor: String(room?.floor || ""),
+    title: room?.title || "",
+    description: room?.description || "",
+    roomType: room?.roomType || "SINGLE" as "SINGLE" | "DOUBLE" | "SUITE" | "DELUXE",
+    bedType: room?.bedType || "SINGLE" as "SINGLE" | "DOUBLE" | "QUEEN" | "KING",
+    capacity: String(room?.capacity || ""),
+    pricePerNight: String(room?.pricePerNight || ""),
+    images: room?.images || "",
+    status: room?.status || "AVAILABLE" as "AVAILABLE" | "MAINTENANCE",
+},
         validators: { onSubmit: zodForm },
         onSubmit: async ({ value }) => {
             const toastId = toast.loading("Updating room...");

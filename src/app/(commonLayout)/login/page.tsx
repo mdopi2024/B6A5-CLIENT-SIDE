@@ -38,7 +38,8 @@ const LoginPage = () => {
         }
         toast.success("👋 Welcome back!", { id: toastId });
         router.push("/");
-      } catch {
+      } catch(err:any) {
+        console.log("Error",err)
         toast.error("Something went wrong", { id: toastId });
       }
     },

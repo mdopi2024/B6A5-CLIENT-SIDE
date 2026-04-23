@@ -3,7 +3,7 @@ import { Routes } from "@/types/routes";
 
 export const guestRoutes:Routes[] = [
     {
-        title:"Administration",
+        title:"My Dashboard",
         items:[
            {
              title:"my bookings",
