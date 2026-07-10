@@ -152,7 +152,7 @@ useEffect(() => {
                     <Button
                         type="submit"
                         form="update-role-form"
-                        className="w-full bg-[#042C53] hover:bg-[#0C447C] text-white font-semibold"
+                       className="w-full bg-[#EF9F27] text-white hover:bg-[#d88f1d] transition-colors duration-200"
                     >
                         <ShieldCheck className="h-4 w-4 mr-2" />
                         Update Role

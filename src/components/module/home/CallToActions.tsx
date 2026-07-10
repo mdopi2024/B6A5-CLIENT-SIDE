@@ -31,7 +31,7 @@ const CTASection = () => {
         <div className="max-w-7xl mx-auto">
           <m.div
             {...fadeUp()}
-            className="relative overflow-hidden rounded-3xl bg-[#042C53] px-8 py-16 md:px-16 md:py-20 text-center"
+            className="relative overflow-hidden rounded-3xl bg-[#042b53] px-8 py-16 md:px-16 md:py-20 text-center"
           >
             {/* Background Decoration */}
             <div className="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-[#EF9F27]/10" />
@@ -74,7 +74,7 @@ const CTASection = () => {
                 </Link>
 
                 <Link
-                  href="/contact"
+                  href="/contact-us"
                   className="inline-flex items-center rounded-full border border-white/20 px-8 py-4 text-base font-semibold text-white transition-all duration-300 hover:border-[#EF9F27] hover:text-[#EF9F27]"
                 >
                   Contact Us

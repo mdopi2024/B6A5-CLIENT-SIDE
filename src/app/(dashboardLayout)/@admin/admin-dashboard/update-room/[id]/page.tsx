@@ -1,5 +1,4 @@
 import AdminRoomUpdateForm from "@/components/module/admin/AdminRoomUpdatedForm";
-import UpdateRoomForm from "@/components/module/shared/UpdateRoomForm";
 
 
 const UpdateRoom = async({params}:{params:Promise<{id:string}>}) => {

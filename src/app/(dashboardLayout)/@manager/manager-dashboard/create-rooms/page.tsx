@@ -154,7 +154,7 @@ const CreateRooms = () => {
           <Button
             type="submit"
             form="create-room-form"
-            className="w-full bg-[#042C53] hover:bg-[#0C447C] text-[#EF9F27]"
+            className="w-full bg-[#EF9F27] text-white hover:bg-[#d88f1d] transition-colors duration-200"
           >
             Create Room
           </Button>

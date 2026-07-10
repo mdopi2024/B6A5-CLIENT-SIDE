@@ -11,7 +11,6 @@ import Link from "next/link";
 
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { authClient } from "@/lib/auth-client";
 import { createManager } from "@/actions/auth.actions";
 
 const zodForm = z.object({
@@ -162,7 +161,7 @@ const CreateManager = () => {
           <Button
             type="submit"
             form="create-manager-form"
-            className="w-full bg-[#042C53] hover:bg-[#0C447C] text-white"
+            className="w-full bg-[#EF9F27] text-white hover:bg-[#d88f1d] transition-colors duration-200"
           >
             Create Manager Account
           </Button>
