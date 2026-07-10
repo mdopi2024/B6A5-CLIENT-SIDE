@@ -1,5 +1,6 @@
 
 import AboutSection from "@/components/module/home/About";
+import FaqSection from "@/components/module/home/Faq";
 import FeaturesSection from "@/components/module/home/Features";
 import Footer from "@/components/module/home/Footer";
 import GallerySection from "@/components/module/home/GellarySection";
@@ -28,6 +29,10 @@ export default async function Home() {
       {/* features section */}
       <div>
        <FeaturesSection></FeaturesSection>
+      </div>
+      {/* faq section */}
+      <div>
+       <FaqSection></FaqSection>
       </div>
       {/* footer section */}
       <div>
