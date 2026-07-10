@@ -1,5 +1,6 @@
 
 import AboutSection from "@/components/module/home/About";
+import CTASection from "@/components/module/home/CallToActions";
 import FaqSection from "@/components/module/home/Faq";
 import FeaturesSection from "@/components/module/home/Features";
 import Footer from "@/components/module/home/Footer";
@@ -33,6 +34,10 @@ export default async function Home() {
       {/* faq section */}
       <div>
        <FaqSection></FaqSection>
+      </div>
+      {/* call to actions section */}
+      <div>
+       <CTASection></CTASection>
       </div>
       {/* footer section */}
       <div>
