@@ -1,5 +1,13 @@
 # 🏨 Hotel Management System (Frontend)
 
+
+
+<!-- Primary: #042C53 (Deep Navy Blue)
+Secondary: #EF9F27 (Warm Golden/Amber) -->
+
+
+
+
 A modern, scalable **frontend application** for the Hotel Management System built with **Next.js (App Router)**.  
 It integrates with a RESTful backend to handle rooms, bookings, guests, payments, and staff management.
 

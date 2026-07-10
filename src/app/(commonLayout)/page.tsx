@@ -1,10 +1,11 @@
 
 import AboutSection from "@/components/module/home/About";
+import FeaturesSection from "@/components/module/home/Features";
 import Footer from "@/components/module/home/Footer";
 import GallerySection from "@/components/module/home/GellarySection";
 import HeroSection from "@/components/module/home/HeroSection";
 import ServicesSection from "@/components/module/home/Services";
-import { AuthServices } from "@/services/auth.services";
+
 
 
 export default async function Home() {
@@ -23,6 +24,10 @@ export default async function Home() {
       {/* services section */}
       <div>
         <ServicesSection></ServicesSection>
+      </div>
+      {/* features section */}
+      <div>
+       <FeaturesSection></FeaturesSection>
       </div>
       {/* footer section */}
       <div>
