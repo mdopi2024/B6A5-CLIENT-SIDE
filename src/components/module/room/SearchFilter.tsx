@@ -119,13 +119,13 @@ const RoomFilters = () => {
           <select
             value={currentSort}
             onChange={(e) => handleSortChange(e.target.value)}
-            className="appearance-none border border-[#042C53]/10 rounded-xl pl-3.5 pr-9 py-3 text-sm font-medium text-[#042C53]
+            className="appearance-none border border-[#042C53]/10 rounded-xl pl-3.5 pr-9 py-3  text-sm font-medium text-[#042C53]
                        bg-white shadow-sm
                        focus:outline-none focus:ring-2 focus:ring-[#EF9F27]/40 focus:border-[#EF9F27]/60
                        cursor-pointer transition-all duration-200"
           >
             {SORT_OPTIONS.map((opt) => (
-              <option key={opt.value} value={opt.value}>
+              <option key={opt.value} value={opt.value} className="hover:bg-[#EF9F27]">
                 {opt.label}
               </option>
             ))}

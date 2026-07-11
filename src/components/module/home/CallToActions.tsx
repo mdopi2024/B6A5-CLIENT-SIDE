@@ -27,15 +27,16 @@ const fadeUp = (delay = 0) => ({
 const CTASection = () => {
   return (
     <LazyMotion features={domAnimation}>
-      <section className=" px-6">
+      <section className="px-6">
         <div className="max-w-7xl mx-auto">
           <m.div
             {...fadeUp()}
-            className="relative overflow-hidden rounded-3xl bg-[#042b53] px-8 py-16 md:px-16 md:py-20 text-center"
+            className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#042C53] via-[#053a6b] to-[#042C53] px-8 py-16 md:px-16 md:py-20 text-center border border-[#EF9F27]/10"
           >
             {/* Background Decoration */}
-            <div className="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-[#EF9F27]/10" />
-            <div className="absolute -bottom-20 -left-20 h-60 w-60 rounded-full bg-white/5" />
+            <div className="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-[#EF9F27]/10 blur-2xl" />
+            <div className="absolute -bottom-20 -left-20 h-60 w-60 rounded-full bg-[#EF9F27]/5 blur-2xl" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(239,159,39,0.08),transparent_60%)]" />
 
             <div className="relative z-10 max-w-3xl mx-auto">
               <m.span
@@ -67,7 +68,7 @@ const CTASection = () => {
               >
                 <Link
                   href="/rooms"
-                  className="inline-flex items-center gap-2 rounded-full bg-[#EF9F27] px-8 py-4 text-base font-semibold text-[#042C53] transition-all duration-300 hover:scale-105 hover:shadow-xl"
+                  className="inline-flex items-center gap-2 rounded-full bg-[#EF9F27] px-8 py-4 text-base font-semibold text-[#042C53] shadow-[0_8px_30px_rgba(239,159,39,0.35)] transition-all duration-300 hover:scale-105 hover:shadow-[0_12px_40px_rgba(239,159,39,0.5)]"
                 >
                   Book Now
                   <ArrowRight className="h-5 w-5" />
@@ -75,7 +76,7 @@ const CTASection = () => {
 
                 <Link
                   href="/contact-us"
-                  className="inline-flex items-center rounded-full border border-white/20 px-8 py-4 text-base font-semibold text-white transition-all duration-300 hover:border-[#EF9F27] hover:text-[#EF9F27]"
+                  className="inline-flex items-center rounded-full border border-white/20 px-8 py-4 text-base font-semibold text-white transition-all duration-300 hover:border-[#EF9F27] hover:bg-[#EF9F27]/10 hover:text-[#EF9F27]"
                 >
                   Contact Us
                 </Link>

@@ -1,42 +1,118 @@
 "use client";
 
+import { useState } from "react";
 import {
   Mail,
   Phone,
   MapPin,
   Clock,
   Send,
-  CarFront,
+  Hotel,
+  Loader2,
 } from "lucide-react";
+import { toast } from "sonner";
+import { sendContactEmail } from "@/utils/sendemail";
+
+type FormState = {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  subject: string;
+  message: string;
+};
+
+const initialState: FormState = {
+  firstName: "",
+  lastName: "",
+  email: "",
+  phone: "",
+  subject: "",
+  message: "",
+};
+
+type Status = "idle" | "loading";
 
 export default function ContactPage() {
+  const [form, setForm] = useState<FormState>(initialState);
+  const [status, setStatus] = useState<Status>("idle");
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const validate = (): string | null => {
+    if (!form.firstName.trim() || !form.lastName.trim()) {
+      return "Please enter your first and last name.";
+    }
+    if (!form.email.trim() || !/^\S+@\S+\.\S+$/.test(form.email)) {
+      return "Please enter a valid email address.";
+    }
+    if (!form.subject.trim()) {
+      return "Please enter a subject.";
+    }
+    if (!form.message.trim()) {
+      return "Please enter a message.";
+    }
+    return null;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const validationError = validate();
+    if (validationError) {
+      toast.error(validationError);
+      return;
+    }
+
+    setStatus("loading");
+
+    try {
+      await sendContactEmail({
+        name: `${form.firstName} ${form.lastName}`.trim(),
+        email: form.email,
+        phone: form.phone,
+        subject: form.subject,
+        message: form.message,
+      });
+
+      setForm(initialState);
+    } catch (err) {
+      console.error("Failed to send message:", err);
+    } finally {
+      setStatus("idle");
+    }
+  };
+
   return (
     <main className="bg-slate-50">
       {/* Hero */}
-   <section className="border-b border-slate-200 bg-white">
-  <div className="mx-auto flex max-w-7xl flex-col items-center px-6 py-20 text-center lg:px-8">
-    <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#EF9F27]/30 bg-[#EF9F27]/10 px-4 py-2 text-sm font-medium text-[#EF9F27]">
-      <CarFront size={18} />
-      Boshonto Hotel & Dining
-    </div>
+      <section className="border-b border-slate-200 bg-white">
+        <div className="mx-auto flex max-w-7xl flex-col items-center px-6 py-20 text-center lg:px-8">
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-[#EF9F27]/30 bg-[#EF9F27]/10 px-4 py-2 text-sm font-medium text-[#EF9F27]">
+            <Hotel size={18} />
+            Boshonto Hotel & Dining
+          </div>
 
-    <h1 className="text-4xl font-bold text-[#042C53] md:text-5xl lg:text-6xl">
-      Contact Us
-    </h1>
+          <h1 className="text-4xl font-bold text-[#042C53] md:text-5xl lg:text-6xl">
+            Contact Us
+          </h1>
 
-    <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600">
-      Whether you have a question about room reservations, dining, events,
-      or our services, our friendly team is always ready to assist you.
-    </p>
-  </div>
-</section>
+          <p className="mt-6 max-w-2xl text-lg leading-8 text-slate-600">
+            Whether you have a question about room reservations, dining, events,
+            or our services, our friendly team is always ready to assist you.
+          </p>
+        </div>
+      </section>
 
       {/* Contact Section */}
-
       <section className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
         <div className="grid gap-12 lg:grid-cols-2">
           {/* Form */}
-
           <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-xl">
             <h2 className="text-3xl font-bold text-[#042C53]">
               Send us a Message
@@ -46,7 +122,7 @@ export default function ContactPage() {
               Fill out the form below and we will respond as soon as possible.
             </p>
 
-            <form className="mt-8 space-y-6">
+            <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
               <div className="grid gap-5 md:grid-cols-2">
                 <div>
                   <label className="mb-2 block font-medium text-slate-700">
@@ -55,6 +131,9 @@ export default function ContactPage() {
 
                   <input
                     type="text"
+                    name="firstName"
+                    value={form.firstName}
+                    onChange={handleChange}
                     placeholder="John"
                     className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#EF9F27] focus:ring-2 focus:ring-[#EF9F27]/20"
                   />
@@ -67,6 +146,9 @@ export default function ContactPage() {
 
                   <input
                     type="text"
+                    name="lastName"
+                    value={form.lastName}
+                    onChange={handleChange}
                     placeholder="Doe"
                     className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#EF9F27] focus:ring-2 focus:ring-[#EF9F27]/20"
                   />
@@ -80,7 +162,25 @@ export default function ContactPage() {
 
                 <input
                   type="email"
+                  name="email"
+                  value={form.email}
+                  onChange={handleChange}
                   placeholder="john@example.com"
+                  className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#EF9F27] focus:ring-2 focus:ring-[#EF9F27]/20"
+                />
+              </div>
+
+              <div>
+                <label className="mb-2 block font-medium text-slate-700">
+                  Phone
+                </label>
+
+                <input
+                  type="tel"
+                  name="phone"
+                  value={form.phone}
+                  onChange={handleChange}
+                  placeholder="+880 1234-567890"
                   className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#EF9F27] focus:ring-2 focus:ring-[#EF9F27]/20"
                 />
               </div>
@@ -92,7 +192,10 @@ export default function ContactPage() {
 
                 <input
                   type="text"
-                  placeholder="Reservation Issue"
+                  name="subject"
+                  value={form.subject}
+                  onChange={handleChange}
+                  placeholder="Room Reservation Inquiry"
                   className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#EF9F27] focus:ring-2 focus:ring-[#EF9F27]/20"
                 />
               </div>
@@ -103,7 +206,10 @@ export default function ContactPage() {
                 </label>
 
                 <textarea
+                  name="message"
                   rows={6}
+                  value={form.message}
+                  onChange={handleChange}
                   placeholder="Write your message..."
                   className="w-full rounded-xl border border-slate-300 px-4 py-3 outline-none transition focus:border-[#EF9F27] focus:ring-2 focus:ring-[#EF9F27]/20"
                 />
@@ -111,61 +217,70 @@ export default function ContactPage() {
 
               <button
                 type="submit"
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#042C53] py-4 font-semibold text-white transition hover:bg-[#063b6d]"
+                disabled={status === "loading"}
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#EF9F27] text-white py-3 hover:bg-[#d88f1d] transition-colors duration-200 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                Send Message
-                <Send size={18} />
+                {status === "loading" ? (
+                  <>
+                    Sending...
+                    <Loader2 size={18} className="animate-spin" />
+                  </>
+                ) : (
+                  <>
+                    Send Message
+                    <Send size={18} />
+                  </>
+                )}
               </button>
             </form>
           </div>
 
           {/* Contact Information */}
-
           <div className="space-y-6">
-            <div className="rounded-3xl bg-[#042C53] p-8 text-white shadow-xl">
-              <h2 className="text-3xl font-bold">
+            <div className="rounded-3xl border border-[#042C53]/10 bg-white p-8 shadow-xl">
+              <h2 className="text-3xl font-bold text-[#042C53]">
                 Contact Information
               </h2>
 
-              <p className="mt-3 text-slate-300">
+              <p className="mt-3 text-slate-500">
                 Reach out to us through any of the following channels.
               </p>
 
               <div className="mt-10 space-y-6">
                 <div className="flex items-start gap-4">
-                  <div className="rounded-xl bg-[#EF9F27] p-3">
-                    <Mail />
+                  <div className="rounded-xl bg-[#EF9F27]/10 p-3">
+                    <Mail className="text-[#EF9F27]" />
                   </div>
 
                   <div>
-                    <h3 className="font-semibold">Email</h3>
-                    <p className="text-slate-300">
-                      support@parkora.com
+                    <h3 className="font-semibold text-[#042C53]">Email</h3>
+                    <p className="text-slate-500">
+                      reservations@boshontohotel.com
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <div className="rounded-xl bg-[#EF9F27] p-3">
-                    <Phone />
+                  <div className="rounded-xl bg-[#EF9F27]/10 p-3">
+                    <Phone className="text-[#EF9F27]" />
                   </div>
 
                   <div>
-                    <h3 className="font-semibold">Phone</h3>
-                    <p className="text-slate-300">
+                    <h3 className="font-semibold text-[#042C53]">Phone</h3>
+                    <p className="text-slate-500">
                       +880 1234-567890
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <div className="rounded-xl bg-[#EF9F27] p-3">
-                    <MapPin />
+                  <div className="rounded-xl bg-[#EF9F27]/10 p-3">
+                    <MapPin className="text-[#EF9F27]" />
                   </div>
 
                   <div>
-                    <h3 className="font-semibold">Office</h3>
-                    <p className="text-slate-300">
+                    <h3 className="font-semibold text-[#042C53]">Address</h3>
+                    <p className="text-slate-500">
                       Chattogram, Bangladesh
                     </p>
                   </div>
@@ -174,13 +289,12 @@ export default function ContactPage() {
             </div>
 
             {/* Business Hours */}
-
             <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-lg">
               <div className="mb-5 flex items-center gap-3">
                 <Clock className="text-[#EF9F27]" />
 
                 <h3 className="text-2xl font-bold text-[#042C53]">
-                  Business Hours
+                  Front Desk Hours
                 </h3>
               </div>
 
@@ -199,11 +313,14 @@ export default function ContactPage() {
                   <span>Sunday</span>
                   <span>Closed</span>
                 </div>
+
+                <p className="pt-2 text-sm text-slate-400">
+                  Check-in and check-out support is available 24/7 for guests.
+                </p>
               </div>
             </div>
 
             {/* FAQ */}
-
             <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-lg">
               <h3 className="text-2xl font-bold text-[#042C53]">
                 Frequently Asked
@@ -212,7 +329,7 @@ export default function ContactPage() {
               <div className="mt-6 space-y-5">
                 <div>
                   <h4 className="font-semibold text-[#042C53]">
-                    How long does support take?
+                    How long does support take to respond?
                   </h4>
 
                   <p className="mt-1 text-slate-600">
@@ -226,18 +343,17 @@ export default function ContactPage() {
                   </h4>
 
                   <p className="mt-1 text-slate-600">
-                    Yes, from your dashboard before your reservation starts.
+                    Yes, from your dashboard before your check-in date.
                   </p>
                 </div>
 
                 <div>
                   <h4 className="font-semibold text-[#042C53]">
-                    Is Parkora available 24/7?
+                    Do you offer airport pickup?
                   </h4>
 
                   <p className="mt-1 text-slate-600">
-                    Parking reservations are available anytime through the
-                    platform.
+                    Yes, on request — just mention it in your reservation notes.
                   </p>
                 </div>
               </div>

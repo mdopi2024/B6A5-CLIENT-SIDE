@@ -33,8 +33,6 @@ const RoomPage = async ({ searchParams }: RoomPageProps) => {
     limit: Number(limit),
   });
 
-  console.log('RoomPage data:', data);
-
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-3">
 
@@ -42,7 +40,7 @@ const RoomPage = async ({ searchParams }: RoomPageProps) => {
       <div className="mb-6">
         
         <p className="text-[#042C53] mt-1 font-semibold">
-          Available Rooms :  <span className='text-[#EF9F27]'>{data?.length ?? 0}</span> 
+          Available Rooms  :  <span className='text-[#EF9F27]'>{meta.total ?? 0}</span> 
         </p>
       </div>
 
