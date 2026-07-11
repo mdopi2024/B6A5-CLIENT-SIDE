@@ -28,6 +28,7 @@ const Footer = () => {
                         <ul className="space-y-2 text-gray-300 text-sm">
                             <li><Link href="/">Home</Link></li>
                             <li><Link href="/rooms">Rooms</Link></li>
+                            <li><Link href="/contact-us">Contact Us</Link></li>
                         </ul>
                     </div>
 

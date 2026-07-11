@@ -3,7 +3,6 @@ import AboutSection from "@/components/module/home/About";
 import CTASection from "@/components/module/home/CallToActions";
 import FaqSection from "@/components/module/home/Faq";
 import FeaturesSection from "@/components/module/home/Features";
-import Footer from "@/components/module/home/Footer";
 import GallerySection from "@/components/module/home/GellarySection";
 import HeroSection from "@/components/module/home/HeroSection";
 import ServicesSection from "@/components/module/home/Services";
@@ -40,9 +39,7 @@ export default async function Home() {
        <CTASection></CTASection>
       </div>
       {/* footer section */}
-      <div>
-        <Footer></Footer>
-      </div>
+      
     </div>
 
 
