@@ -6,6 +6,10 @@ export const managerRoutes:Routes[] = [
         title:"Management",
         items:[
            {
+             title:"Overview",
+             url:"/manager-dashboard/overview"
+            },
+           {
              title:"Bookings",
              url:"/manager-dashboard/bookings"
             },
