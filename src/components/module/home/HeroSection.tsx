@@ -31,7 +31,7 @@ const stats = [
 
 const HeroSection = () => {
   return (
-    <section className="relative overflow-hidden min-h-screen flex flex-col">
+    <section className="relative overflow-hidden min-h-[65vh] flex flex-col">
 
       {/* soft floating glow */}
       <div
@@ -50,7 +50,7 @@ const HeroSection = () => {
         {/* LEFT */}
         <div className="flex flex-col justify-center px-8 md:px-16 py-16 lg:py-0">
 
-          <motion.div {...fadeUp(0.1)} className="flex items-center gap-3 mb-6">
+          <motion.div {...fadeUp(0.1)} className="flex items-center gap-3 mb-3 mt-4">
             <div className="w-7 h-px bg-[#EF9F27]" />
             <span className="text-[#EF9F27] text-xs font-semibold tracking-[0.18em] uppercase">
               Boshonto Hotel · cox's bazar

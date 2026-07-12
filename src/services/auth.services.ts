@@ -32,7 +32,6 @@ export const AuthServices = {
                 next: { tags: ["getAllUser"] },
             })
             const data = await res.json();
-
             return data;
 
         } catch (error) {
