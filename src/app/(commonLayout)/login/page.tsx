@@ -45,6 +45,14 @@ const LoginPage = () => {
     },
   });
 
+  const fillAdminCredentials = () => {
+    const adminEmail = "admin@gmail.com";
+    const adminPassword = "12345678"; // admin password, for quick test
+
+    form.setFieldValue("email", adminEmail);
+    form.setFieldValue("password", adminPassword);
+  };
+
   return (
     <div
       className="min-h-screen bg-[#F1EFE8] flex items-center justify-center px-4 py-10"
@@ -136,6 +144,16 @@ const LoginPage = () => {
           >
             Sign In
           </Button>
+
+          <Button
+            type="button"
+            variant="outline"
+            onClick={fillAdminCredentials}
+            className="w-full border-[#042C53]/20 text-[#042C53] hover:bg-[#042C53]/5 transition-colors duration-200"
+          >
+            Fill Admin Credentials (Test)
+          </Button>
+
           <p className="text-sm text-center text-[#042C53]/60">
             Don&apos;t have an account?{" "}
             <Link href="/signup" className="text-[#EF9F27] font-semibold">
