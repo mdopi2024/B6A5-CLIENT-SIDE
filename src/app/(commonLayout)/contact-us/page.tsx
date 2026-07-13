@@ -110,7 +110,7 @@ export default function ContactPage() {
       </section>
 
       {/* Contact Section */}
-      <section className="mx-auto max-w-7xl px-6 py-20 lg:px-8">
+      <section className="mx-auto max-w-7xl px-6 pt-20 lg:px-8">
         <div className="grid gap-12 lg:grid-cols-2">
           {/* Form */}
           <div className="rounded-3xl border border-slate-200 bg-white p-8 shadow-xl">

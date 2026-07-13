@@ -34,8 +34,9 @@ const RoomPage = async ({ searchParams }: RoomPageProps) => {
     limit: Number(limit),
   });
 
+
   return (
-    <div className="min-h-screen bg-gray-50 p-4 md:p-3">
+    <div className="min-h-scree p-4 md:p-3">
 
       {/* ---------- TOP: Heading + Search bar / Sort ---------- */}
       <div className="mb-6">
