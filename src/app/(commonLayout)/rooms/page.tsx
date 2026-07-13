@@ -1,4 +1,4 @@
-import Footer from '@/components/module/home/Footer';
+
 import Pagination from '@/components/module/room/Paginations';
 import RoomCard from '@/components/module/room/RoomCard';
 import RoomFilters from '@/components/module/room/SearchFilter';

@@ -1,7 +1,9 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
 
+import { getAllRooms } from "@/actions/room.action";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 
 const fadeUp = (delay = 0) => ({
   initial: { opacity: 0, y: 24 },
@@ -14,14 +16,24 @@ const fadeUp = (delay = 0) => ({
   viewport: { once: true },
 });
 
-const stats = [
-  { value: "200+", label: "Luxury Rooms" },
+
+
+const AboutSection = () => {
+   const [roomNumber, setRoomNumber] = useState(0);
+   const stats = [
+  { value: roomNumber, label: "Luxury Rooms" },
   { value: "4.9★", label: "Guest Rating" },
   { value: "15+", label: "Years Experience" },
   { value: "24/7", label: "Service" },
 ];
-
-const AboutSection = () => {
+   useEffect(() => {
+    const getRooms = async () => {
+      const rooms = await getAllRooms();
+    
+      setRoomNumber(rooms?.meta?.total ?? 0);
+    };
+    getRooms();
+  }, []);
   return (
     <section className="pt-12 px-3 md:px-6 lg:px-10 bg-white">
       <div className="max-w-5xl mx-auto text-center">

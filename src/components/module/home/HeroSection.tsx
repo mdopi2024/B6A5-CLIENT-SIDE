@@ -2,166 +2,214 @@
 "use client";
 
 import Image from "next/image";
-import { motion } from "framer-motion";
+import { motion, easeOut, type Variants } from "framer-motion";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+import { Fraunces, Manrope } from "next/font/google";
+import { getAllRooms } from "@/actions/room.action";
 
-const fadeUp = (delay = 0) => ({
-  initial: { opacity: 0, y: 24 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] as const, delay },
+// Display face for the headline (warm, editorial serif with a real italic)
+// paired with a clean grotesque for everything functional.
+const fraunces = Fraunces({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  style: ["normal", "italic"],
+  display: "swap",
 });
 
-const fadeRight = {
-  initial: { opacity: 0, x: 44 },
-  animate: { opacity: 1, x: 0 },
-  transition: { duration: 0.9, ease: [0.22, 1, 0.36, 1] as const, delay: 0.15 },
+const manrope = Manrope({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
+  display: "swap",
+});
+
+// One parent variant with staggered children keeps the whole entrance
+// in sync instead of every motion.* element running its own timeline.
+const content: Variants = {
+  hidden: {},
+  show: {
+    transition: { staggerChildren: 0.12, delayChildren: 0.15 },
+  },
 };
 
-const floatCard = (delay = 0) => ({
-  initial: { opacity: 0, y: 20 },
-  animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.7, ease: [0.22, 1, 0.36, 1] as const, delay },
-});
+const item: Variants = {
+  hidden: { opacity: 0, y: 24 },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: easeOut },
+  },
+};
 
-const stats = [
-  { value: "4.9★", label: "Guest Rating" },
-  { value: "200+", label: "Rooms" },
-  { value: "15yr", label: "Trusted" },
-];
+const floatCard: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  show: (delay: number = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.6, ease: easeOut, delay },
+  }),
+};
 
 const HeroSection = () => {
-  return (
-    <section className="relative overflow-hidden min-h-[65vh] flex flex-col">
+  const [roomNumber, setRoomNumber] = useState(0);
+  const [lowestPrice, setLowestPrice] = useState(0);
+  const [loaded, setLoaded] = useState(false);
 
-      {/* soft floating glow */}
-      <div
-        className="pointer-events-none absolute -top-32 -right-20 w-[480px] h-[480px] rounded-full"
-        style={{
-          background: "radial-gradient(circle, rgba(239,159,39,0.14) 0%, transparent 70%)"
-        }}
+  const stats = [
+    { value: "4.9★", label: "Guest Rating" },
+    { value: roomNumber, label: "Rooms" },
+    { value: "15yr", label: "Years Trusted" },
+  ];
+
+  useEffect(() => {
+    const getRooms = async () => {
+      const rooms = await getAllRooms();
+      const lowest =
+        rooms?.data?.length > 0
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          ? Math.min(...rooms.data.map((room: any) => Number(room.pricePerNight)))
+          : 0;
+
+      setLowestPrice(lowest);
+      setRoomNumber(rooms?.meta?.total ?? 0);
+      setLoaded(true);
+    };
+    getRooms();
+  }, []);
+
+  return (
+    <section
+      className={`${manrope.className} relative overflow-hidden h-[70vh] min-h-[520px] max-h-[75vh] flex items-end`}
+    >
+      {/* the photo IS the background — no color panel underneath it */}
+      <Image
+        src="/hero.jpg"
+        alt="Boshonto Hotel, a luxury sea-view room in Cox's Bazar"
+        fill
+        priority
+        sizes="100vw"
+        className="object-cover object-center"
       />
 
-      {/* subtle depth */}
-      <div className="absolute inset-0 bg-black/[0.02] pointer-events-none" />
+      {/* legibility scrim, just enough to read text over the photo */}
+      <div className="absolute inset-0 bg-gradient-to-t from-[#042C53]/85 via-[#042C53]/35 to-[#042C53]/10" />
+      <div className="absolute inset-0 bg-gradient-to-r from-[#042C53]/55 via-transparent to-transparent" />
 
-      {/* MAIN GRID */}
-      <div className="relative z-10 flex-1 grid grid-cols-1 lg:grid-cols-2">
+      {/* rooms available chip, floating top-right */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.85, y: -10 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ delay: 0.9, duration: 0.5, ease: easeOut }}
+        className="absolute top-6 right-6 z-20 bg-white/85 backdrop-blur-xl border border-white/40 rounded-2xl pl-3 pr-4 py-2.5 flex items-center gap-2.5"
+      >
+        <span className="w-2 h-2 rounded-full bg-[#EF9F27] animate-pulse" />
+        <p className="text-[#042C53] text-xs font-bold leading-tight">
+          {roomNumber} Rooms
+          <span className="block font-medium text-[#042C53]/55">Available now</span>
+        </p>
+      </motion.div>
 
-        {/* LEFT */}
-        <div className="flex flex-col justify-center px-8 md:px-16 py-16 lg:py-0">
-
-          <motion.div {...fadeUp(0.1)} className="flex items-center gap-3 mb-3 mt-4">
-            <div className="w-7 h-px bg-[#EF9F27]" />
-            <span className="text-[#EF9F27] text-xs font-semibold tracking-[0.18em] uppercase">
-              Boshonto Hotel · cox's bazar
+      <motion.div
+        variants={content}
+        initial="hidden"
+        animate="show"
+        className="relative z-10 w-full px-8 md:px-14 lg:px-20 pb-16 lg:pb-24"
+      >
+        <div className="max-w-2xl">
+          <motion.div variants={item} className="flex items-center gap-3 mb-5">
+            <svg width="26" height="10" viewBox="0 0 26 10" fill="none">
+              <path
+                d="M0 5c3-5 6-5 9 0s6 5 9 0 6-5 8-2"
+                stroke="#EF9F27"
+                strokeWidth="1.4"
+                strokeLinecap="round"
+              />
+            </svg>
+            <span className="text-[#EF9F27] text-xs font-semibold tracking-[0.2em] uppercase">
+              Boshonto Hotel · Cox's Bazar
             </span>
           </motion.div>
 
           <motion.h1
-            {...fadeUp(0.2)}
-            className="text-5xl md:text-6xl font-black text-[#042C53] leading-[1.06] tracking-tight mb-5"
+            variants={item}
+            className="text-[2.75rem] leading-[1.08] md:text-6xl md:leading-[1.05] font-medium tracking-tight mb-6 text-white"
           >
-            Luxury<br />
-            <span className="text-[#EF9F27] relative">
-              Redefined
-              <span className="absolute bottom-0.5 left-0 w-full h-0.5 bg-[#EF9F27]/30 rounded" />
-            </span><br />
-            In Every
-            Detail
+            Wake up to the
+            <br />
+            <span
+              className={`${fraunces.className} italic font-normal text-[#EF9F27] relative inline-block`}
+            >
+              Bay of Bengal
+              <svg
+                className="absolute -bottom-2 left-0 w-full"
+                height="8"
+                viewBox="0 0 220 8"
+                fill="none"
+                preserveAspectRatio="none"
+              >
+                <path
+                  d="M0 5c18-6 36-6 55 0s36 6 55 0 36-6 55 0 36 6 55 0"
+                  stroke="#EF9F27"
+                  strokeOpacity="0.55"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </span>
           </motion.h1>
 
           <motion.p
-            {...fadeUp(0.3)}
-            className="text-[#042C53]/70 text-base leading-relaxed max-w-sm mb-8"
+            variants={item}
+            className="text-white/75 text-base leading-relaxed max-w-sm mb-9"
           >
-            Experience the finest hospitality in the heart of Bangladesh.
-            Premium rooms, curated dining, and a stay you will remember.
+            Steps from the world's longest natural sea beach, Boshonto pairs
+            warm Bengali hospitality with quiet, contemporary comfort.
           </motion.p>
 
-          <motion.div {...fadeUp(0.4)} className="flex flex-wrap items-center gap-3 mb-10">
+          <motion.div variants={item} className="flex flex-wrap items-center gap-4 mb-10">
             <Link
               href="/rooms"
-              className="bg-[#EF9F27] text-white font-bold text-sm px-7 py-4 rounded-2xl shadow-md hover:scale-105 transition-all duration-300"
+              className="group bg-[#EF9F27] text-[#042C53] font-bold text-sm px-7 py-4 rounded-2xl shadow-[0_8px_24px_rgba(239,159,39,0.28)] hover:shadow-[0_10px_28px_rgba(239,159,39,0.4)] hover:-translate-y-0.5 transition-all duration-300 inline-flex items-center gap-2"
             >
               Explore Rooms
+              <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
             </Link>
-
-           
           </motion.div>
 
-          <motion.div {...fadeUp(0.5)} className="flex gap-7">
-            {stats.map((s, i) => (
-              <div
-                key={s.label}
-                className={`flex flex-col gap-0.5 ${
-                  i < stats.length - 1 ? "pr-7 border-r border-[#042C53]/10" : ""
-                }`}
-              >
-                <span className="text-[#042C53] font-bold text-2xl">
-                  {s.value}
-                </span>
-                <span className="text-[#042C53]/50 text-[10px] font-medium tracking-widest uppercase">
-                  {s.label}
-                </span>
-              </div>
-            ))}
+          <motion.div variants={item} className="flex items-center gap-7">
+            <div className="flex gap-7">
+              {stats.map((s, i) => (
+                <div
+                  key={s.label}
+                  className={`flex flex-col gap-0.5 ${
+                    i < stats.length - 1 ? "pr-7 border-r border-white/20" : ""
+                  }`}
+                >
+                  <span className="text-white font-bold text-2xl tabular-nums">{s.value}</span>
+                  <span className="text-white/55 text-[10px] font-medium tracking-widest uppercase">
+                    {s.label}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            {/* price, folded into the same row instead of a separate card */}
+            <motion.div
+              variants={floatCard}
+              custom={0.6}
+              className="pl-7 border-l border-white/20"
+            >
+              <p className="text-white/55 text-[10px] font-semibold tracking-wide uppercase mb-1">
+                Starting from
+              </p>
+              <p className="text-[#EF9F27] font-bold text-2xl leading-none">
+                {loaded ? `৳ ${lowestPrice.toLocaleString()}` : "—"}
+                <span className="text-white/55 text-xs font-normal"> /night</span>
+              </p>
+            </motion.div>
           </motion.div>
         </div>
-
-        {/* RIGHT */}
-        <motion.div {...fadeRight} className="relative overflow-hidden min-h-[460px] lg:min-h-0">
-
-          <Image
-            src="/hero.jpg"
-            alt="Bosonto Hotel luxury room"
-            fill
-            priority
-            sizes="(max-width: 1024px) 100vw, 50vw"
-            className="object-cover object-center"
-          />
-
-          {/* overlay */}
-          <div className="absolute inset-0 bg-gradient-to-r from-white/70 via-white/10 to-transparent" />
-
-          {/* price card */}
-          <motion.div
-            {...floatCard(0.7)}
-            className="absolute bottom-7 left-0 bg-white/80 backdrop-blur-xl border border-[#042C53]/10 rounded-2xl px-5 py-4 min-w-[155px]"
-          >
-            <p className="text-[#042C53]/60 text-[10px] font-semibold uppercase mb-1">
-              Starting from
-            </p>
-            <p className="text-[#EF9F27] font-bold text-2xl leading-none">
-              ৳120
-              <span className="text-[#042C53]/40 text-xs font-normal"> /night</span>
-            </p>
-          </motion.div>
-
-          {/* badge */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8, y: -10 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ delay: 0.85, duration: 0.6, ease: [0.22, 1, 0.36, 1] as const }}
-            className="absolute top-5 right-5 bg-[#EF9F27] rounded-xl px-4 py-2.5 text-center"
-          >
-            <p className="text-white text-xl font-bold">200+</p>
-          </motion.div>
-
-          {/* availability */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 1, duration: 0.7, ease: [0.22, 1, 0.36, 1] as const }}
-            className="absolute top-1/2 -translate-y-1/2 right-5 bg-white/70 backdrop-blur-xl border border-[#042C53]/10 rounded-2xl px-4 py-3"
-          >
-            <p className="text-[#042C53] text-xs font-semibold">
-              Rooms Available
-            </p>
-          </motion.div>
-
-        </motion.div>
-      </div>
-
+      </motion.div>
     </section>
   );
 };
