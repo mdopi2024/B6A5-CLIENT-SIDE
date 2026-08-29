@@ -30,8 +30,14 @@ export const getRoomById = async (id: string) => {
     updateTag('all-rooms')
     return result;
 }
-export const updateRoom = async (id: string,payload:Room) => {
-    const result = await roomService.updateRoom(id,payload);
-    updateTag('all-rooms')
+export const updateRoom = async (id: string, payload: Partial<Room>, file?: File) => {
+    const formData = new FormData();
+    formData.append("data", JSON.stringify(payload));
+    if (file) {
+        formData.append("file", file);
+    }
+
+    const result = await roomService.updateRoom(id, formData);
+    updateTag('all-rooms');
     return result;
 }

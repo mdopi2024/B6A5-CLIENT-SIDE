@@ -12,6 +12,7 @@ import { toast } from "sonner";
 import { useEffect, useState } from "react";
 import { getRoomById, updateRoom } from "@/actions/room.action";
 import { Room } from "@/types/room.interface";
+import { Loader2, ImagePlus, X } from "lucide-react";
 
 const zodForm = z.object({
     roomNumber: z.string().min(1, "Room number is required"),
@@ -22,38 +23,67 @@ const zodForm = z.object({
     bedType: z.enum(["SINGLE", "DOUBLE", "QUEEN", "KING"]),
     capacity: z.string().min(1, "Capacity is required"),
     pricePerNight: z.string().min(1, "Price is required"),
-    images: z.string(),
     status: z.enum(["AVAILABLE", "MAINTENANCE"]),
 });
 
 const CreateRooms = ({ id }: { id: string }) => {
     const router = useRouter();
     const [room, setRoom] = useState<Room | null>(null);
+    const [isPageLoading, setIsPageLoading] = useState(true);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [imageFile, setImageFile] = useState<File | null>(null);
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
 
     useEffect(() => {
         const loadRoom = async () => {
             if (!id) return;
+            setIsPageLoading(true);
             const res = await getRoomById(id as string);
             setRoom(res.data);
+            // ✅ existing room image দিয়ে preview শুরু করি
+            if (res.data?.images) setImagePreview(res.data.images);
+            setIsPageLoading(false);
         };
         loadRoom();
     }, [id]);
 
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        if (!file.type.startsWith("image/")) {
+            toast.error("Please select a valid image file");
+            return;
+        }
+        if (file.size > 5 * 1024 * 1024) {
+            toast.error("Image must be smaller than 5MB");
+            return;
+        }
+
+        setImageFile(file);
+        setImagePreview(URL.createObjectURL(file));
+    };
+
+    const removeImage = () => {
+        setImageFile(null);
+        setImagePreview(null);
+    };
+
     const form = useForm({
-       defaultValues: {
-    roomNumber: String(room?.roomNumber || ""),
-    floor: String(room?.floor || ""),
-    title: room?.title || "",
-    description: room?.description || "",
-    roomType: room?.roomType || "SINGLE" as "SINGLE" | "DOUBLE" | "SUITE" | "DELUXE",
-    bedType: room?.bedType || "SINGLE" as "SINGLE" | "DOUBLE" | "QUEEN" | "KING",
-    capacity: String(room?.capacity || ""),
-    pricePerNight: String(room?.pricePerNight || ""),
-    images: room?.images || "",
-    status: room?.status || "AVAILABLE" as "AVAILABLE" | "MAINTENANCE",
-},
+        defaultValues: {
+            roomNumber: String(room?.roomNumber || ""),
+            floor: String(room?.floor || ""),
+            title: room?.title || "",
+            description: room?.description || "",
+            roomType: room?.roomType || "SINGLE" as "SINGLE" | "DOUBLE" | "SUITE" | "DELUXE",
+            bedType: room?.bedType || "SINGLE" as "SINGLE" | "DOUBLE" | "QUEEN" | "KING",
+            capacity: String(room?.capacity || ""),
+            pricePerNight: String(room?.pricePerNight || ""),
+            status: room?.status || "AVAILABLE" as "AVAILABLE" | "MAINTENANCE",
+        },
         validators: { onSubmit: zodForm },
         onSubmit: async ({ value }) => {
+            setIsSubmitting(true);
             const toastId = toast.loading("Updating room...");
             try {
                 const payload = {
@@ -62,19 +92,29 @@ const CreateRooms = ({ id }: { id: string }) => {
                     capacity: Number(value.capacity),
                     pricePerNight: Number(value.pricePerNight),
                 };
-                const result = await updateRoom(id, payload as Room);
-                console.log(result)
+                // ✅ নতুন ছবি দিলে সেটা পাঠাই, না দিলে undefined (পুরনো ছবি থেকে যাবে)
+                const result = await updateRoom(id, payload as Partial<Room>, imageFile ?? undefined);
                 if (!result.success) {
-                    toast.error( result.message||"Failed to update room", { id: toastId });
-                    return
+                    toast.error(result.message || "Failed to update room", { id: toastId });
+                    return;
                 }
                 toast.success(result.message || "Room updated successfully", { id: toastId });
                 router.push('/manager-dashboard/rooms');
             } catch {
                 toast.error("Something went wrong", { id: toastId });
+            } finally {
+                setIsSubmitting(false);
             }
         },
     });
+
+    if (isPageLoading) {
+        return (
+            <div className="min-h-screen bg-[#F1EFE8] flex items-center justify-center">
+                <Loader2 className="w-6 h-6 animate-spin text-[#042C53]" />
+            </div>
+        );
+    }
 
     return (
         <div
@@ -88,7 +128,6 @@ const CreateRooms = ({ id }: { id: string }) => {
 
                 <div className="h-[3px] w-full bg-gradient-to-r from-[#042C53] to-[#EF9F27]" />
 
-                {/* Header */}
                 <CardHeader className="bg-[#042C53] px-6 sm:px-7 py-5 flex flex-row items-center gap-4 space-y-0 relative overflow-hidden">
                     <div
                         className="absolute inset-0"
@@ -109,7 +148,6 @@ const CreateRooms = ({ id }: { id: string }) => {
 
                 <div className="h-px bg-gradient-to-r from-transparent via-[#EF9F27]/40 to-transparent" />
 
-                {/* Form */}
                 <CardContent className="px-5 sm:px-7 pt-6 pb-2">
                     <form
                         id="create-room-form"
@@ -162,7 +200,6 @@ const CreateRooms = ({ id }: { id: string }) => {
                                         <FormField form={form} name="pricePerNight" label="Price / Night (৳)" placeholder="e.g. 5000" type="number" />
                                     </div>
 
-                                    {/* ✅ Status Field */}
                                     <SelectField
                                         form={form}
                                         name="status"
@@ -171,10 +208,51 @@ const CreateRooms = ({ id }: { id: string }) => {
                                     />
                                 </div>
 
-                                <SectionLabel title="Room Images" />
+                                <SectionLabel title="Room Image" />
 
                                 <div className="-mt-2">
-                                    <FormField form={form} name="images" label="Image URL (Optional)" placeholder="https://example.com/room.jpg" />
+                                    {!imagePreview ? (
+                                        <label
+                                            htmlFor="room-image-upload"
+                                            className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-[#042C53]/15 rounded-xl py-8 cursor-pointer hover:border-[#EF9F27]/50 hover:bg-[#F1EFE8] transition-colors"
+                                        >
+                                            <ImagePlus className="w-6 h-6 text-[#B4B2A9]" />
+                                            <span className="text-sm text-[#042C53] font-medium">Click to upload an image</span>
+                                            <span className="text-xs text-[#B4B2A9]">PNG, JPG up to 5MB</span>
+                                            <input
+                                                id="room-image-upload"
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={handleFileChange}
+                                                className="hidden"
+                                            />
+                                        </label>
+                                    ) : (
+                                        <div className="relative w-full h-44 rounded-xl overflow-hidden border border-[#042C53]/10">
+                                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                                            <img src={imagePreview} alt="Room preview" className="w-full h-full object-cover" />
+                                            <button
+                                                type="button"
+                                                onClick={removeImage}
+                                                className="absolute top-2 right-2 w-7 h-7 rounded-full bg-[#042C53]/80 text-white flex items-center justify-center hover:bg-[#042C53]"
+                                            >
+                                                <X className="w-4 h-4" />
+                                            </button>
+                                            <label
+                                                htmlFor="room-image-upload"
+                                                className="absolute bottom-2 right-2 text-xs bg-white/90 text-[#042C53] px-5 py-1.5  rounded-lg cursor-pointer hover:bg-white font-bold"
+                                            >
+                                                Change
+                                            </label>
+                                            <input
+                                                id="room-image-upload"
+                                                type="file"
+                                                accept="image/*"
+                                                onChange={handleFileChange}
+                                                className="hidden"
+                                            />
+                                        </div>
+                                    )}
                                 </div>
 
                             </div>
@@ -186,9 +264,17 @@ const CreateRooms = ({ id }: { id: string }) => {
                     <Button
                         type="submit"
                         form="create-room-form"
-                        className="w-full bg-[#EF9F27] text-white hover:bg-[#d88f1d] transition-colors duration-200"
+                        disabled={isSubmitting}
+                        className="w-full bg-[#EF9F27] text-white hover:bg-[#d88f1d] transition-colors duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
                     >
-                        Update Room
+                        {isSubmitting ? (
+                            <span className="flex items-center justify-center gap-2">
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                                Updating...
+                            </span>
+                        ) : (
+                            "Update Room"
+                        )}
                     </Button>
                 </CardFooter>
 

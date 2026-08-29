@@ -12,7 +12,7 @@ export interface CreateRoomFormValues {
 export interface Room {
   id: string;
   roomNumber: string;
-  roomType: "SINGLE" | "DOUBLE" | "SUITE";
+  roomType: "SINGLE" | "DOUBLE" | "SUITE" | "DELUXE"; // ✅ DELUXE যোগ হলো
   title: string;
   description: string;
   pricePerNight: number;
@@ -21,7 +21,6 @@ export interface Room {
   images: string;
   status: "AVAILABLE" | "BOOKED" | "MAINTENANCE";
   floor: number;
-  createdAt: string; // ISO date string
-  updatedAt: string; // ISO date string
+  createdAt: string;
+  updatedAt: string;
 }
-
