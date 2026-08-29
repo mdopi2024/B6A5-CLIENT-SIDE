@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
@@ -9,10 +10,8 @@ import { useForm } from "@tanstack/react-form";
 import * as z from "zod";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { Loader2, ImagePlus, X } from "lucide-react";
 import { createRoom } from "@/actions/room.action";
-import { CreateRoomFormValues } from "@/types/room.interface";
-
-
 
 // ✅ All fields are string-based to match defaultValues — no coercion in schema
 const zodForm = z.object({
@@ -24,11 +23,36 @@ const zodForm = z.object({
   bedType: z.enum(["SINGLE", "DOUBLE", "QUEEN", "KING"]),
   capacity: z.string().min(1, "Capacity is required"),
   pricePerNight: z.string().min(1, "Price is required"),
-  images: z.string(),
 });
 
 const CreateRooms = () => {
   const router = useRouter();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select a valid image file");
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Image must be smaller than 5MB");
+      return;
+    }
+
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
+  };
+
+  const removeImage = () => {
+    if (imagePreview) URL.revokeObjectURL(imagePreview);
+    setImageFile(null);
+    setImagePreview(null);
+  };
 
   const form = useForm({
     defaultValues: {
@@ -40,10 +64,16 @@ const CreateRooms = () => {
       bedType: "SINGLE" as "SINGLE" | "DOUBLE" | "QUEEN" | "KING",
       capacity: "",
       pricePerNight: "",
-      images: "",
     },
-    validators: { onSubmit: zodForm},
+    validators: { onSubmit: zodForm },
     onSubmit: async ({ value }) => {
+      // ✅ file is required now — guard before hitting the server action
+      if (!imageFile) {
+        toast.error("Please upload a room image");
+        return;
+      }
+
+      setIsSubmitting(true);
       const toastId = toast.loading("Creating room...");
       try {
         // ✅ Coerce numbers here manually
@@ -53,15 +83,21 @@ const CreateRooms = () => {
           capacity: Number(value.capacity),
           pricePerNight: Number(value.pricePerNight),
         };
-        const result = await createRoom(payload as CreateRoomFormValues)
+
+        // ✅ createRoom now takes (data, file) — FormData is built server-side
+        const result = await createRoom(payload, imageFile);
+
         if (!result?.success) {
           toast.error(result?.message || "Failed to create room", { id: toastId });
           return;
         }
         toast.success(result?.message || "Room created successfully!", { id: toastId });
         form.reset();
+        removeImage();
       } catch {
         toast.error("Something went wrong", { id: toastId });
+      } finally {
+        setIsSubmitting(false);
       }
     },
   });
@@ -140,9 +176,37 @@ const CreateRooms = () => {
                   </div>
                 </div>
 
-                <SectionLabel title="Room Images" />
+                <SectionLabel title="Room Image *" />
                 <div className="-mt-2">
-                  <FormField form={form} name="images" label="Image URL (Optional)" placeholder="https://example.com/room.jpg" />
+                  {!imagePreview ? (
+                    <label
+                      htmlFor="room-image-upload"
+                      className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-[#042C53]/15 rounded-xl py-8 cursor-pointer hover:border-[#EF9F27]/50 hover:bg-[#F1EFE8] transition-colors"
+                    >
+                      <ImagePlus className="w-6 h-6 text-[#B4B2A9]" />
+                      <span className="text-sm text-[#042C53] font-medium">Click to upload an image</span>
+                      <span className="text-xs text-[#B4B2A9]">PNG, JPG up to 5MB</span>
+                      <input
+                        id="room-image-upload"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFileChange}
+                        className="hidden"
+                      />
+                    </label>
+                  ) : (
+                    <div className="relative w-full h-44 rounded-xl overflow-hidden border border-[#042C53]/10">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={imagePreview} alt="Room preview" className="w-full h-full object-cover" />
+                      <button
+                        type="button"
+                        onClick={removeImage}
+                        className="absolute top-2 right-2 w-7 h-7 rounded-full bg-[#042C53]/80 text-white flex items-center justify-center hover:bg-[#042C53]"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  )}
                 </div>
 
               </div>
@@ -154,9 +218,17 @@ const CreateRooms = () => {
           <Button
             type="submit"
             form="create-room-form"
-            className="w-full bg-[#EF9F27] text-white hover:bg-[#d88f1d] transition-colors duration-200"
+            disabled={isSubmitting}
+            className="w-full bg-[#EF9F27] text-white hover:bg-[#d88f1d] transition-colors duration-200 disabled:opacity-70 disabled:cursor-not-allowed"
           >
-            Create Room
+            {isSubmitting ? (
+              <span className="flex items-center justify-center gap-2">
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Creating...
+              </span>
+            ) : (
+              "Create Room"
+            )}
           </Button>
         </CardFooter>
 

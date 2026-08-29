@@ -5,10 +5,17 @@ import { updateTag } from "next/cache";
 
 
 
-export const createRoom = async (data: CreateRoomFormValues) => {
-    const result = await roomService.createRoom(data);
+export const createRoom = async (data: CreateRoomFormValues, file: File) => {
+    const formData = new FormData();
+    formData.append("data", JSON.stringify(data));
+    formData.append("file", file);
+
+    const result = await roomService.createRoom(formData);
+    updateTag('all-rooms');
     return result;
 }
+
+
 export const getAllRooms = async () => {
     const result = await roomService.getAllRooms();
     return result;
