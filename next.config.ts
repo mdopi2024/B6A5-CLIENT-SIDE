@@ -17,6 +17,22 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+   images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.ibb.co.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'i.ibb.co',
+      },
+    ],
+  },
 };
 
 export default nextConfig;
